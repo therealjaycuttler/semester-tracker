@@ -82,7 +82,7 @@ main{max-width:1120px;margin:0 auto;padding:20px 16px 70px}
 .btn.sm{padding:6px 11px;font-size:13px;box-shadow:2px 2px 0 var(--sh)}
 .inp{width:100%;padding:11px 13px;border-radius:var(--r-sm);border:2px solid var(--bd);background:var(--card);color:var(--ink)}
 .inp::placeholder{color:var(--muted)}
-.icon{border:0;background:transparent;width:30px;height:30px;border-radius:9px;color:var(--muted);font-size:15px;display:grid;place-items:center;flex:none}
+.icon{border:0;background:transparent;width:30px;height:30px;border-radius:99px;color:var(--muted);font-size:15px;display:grid;place-items:center;flex:none}
 .icon:hover{background:var(--card2);color:var(--ink)}
 .icon.on{color:#e08a00}
 
@@ -225,7 +225,7 @@ main{max-width:1120px;margin:0 auto;padding:20px 16px 70px}
 .topic .t{flex:1;min-width:140px;cursor:pointer;overflow-wrap:anywhere;display:flex;align-items:center;gap:8px}
 .topic.done .t-txt{color:var(--muted);text-decoration:line-through;text-decoration-thickness:2px}
 
-/* 3-Dot Topic Status Controls (1: Red Learn Again, 2: Yellow Revise, 3: Green Completed) */
+/* 3-Dot Topic Status Controls */
 .status-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--bd);display:inline-block;flex:none;background:var(--track)}
 .status-dot.s1{background:var(--red);box-shadow:0 0 0 2px rgba(255,90,95,.25)}
 .status-dot.s2{background:var(--yellow);box-shadow:0 0 0 2px rgba(255,217,61,.35)}
@@ -318,20 +318,20 @@ main{max-width:1120px;margin:0 auto;padding:20px 16px 70px}
 
 <header class="top">
   <div class="top-in">
-    <div class="logo"><span class="logo-mark">??</span><span>SyllabusPal</span></div>
+    <div class="logo"><span class="logo-mark">📚</span><span>SyllabusPal</span></div>
     <nav class="nav" aria-label="Main">
-      <button class="navbtn" data-action="nav" data-view="dashboard"><span>??</span><span>Home</span></button>
-      <button class="navbtn" data-action="nav" data-view="tracker"><span>?</span><span>Tracker</span></button>
-      <button class="navbtn" data-action="nav" data-view="focus"><span>??</span><span>Focus</span></button>
+      <button class="navbtn" data-action="nav" data-view="dashboard"><span>🏠</span><span>Home</span></button>
+      <button class="navbtn" data-action="nav" data-view="tracker"><span>📋</span><span>Tracker</span></button>
+      <button class="navbtn" data-action="nav" data-view="focus"><span>⏱️</span><span>Focus</span></button>
     </nav>
     <div class="top-r">
-      <button id="pill" class="pill" data-action="nav" data-view="focus" hidden>? <span id="pilltime"></span></button>
-      <span id="sync-badge" class="sync-pill" hidden>?? Saved</span>
+      <button id="pill" class="pill" data-action="nav" data-view="focus" hidden>⏱️ <span id="pilltime"></span></button>
+      <span id="sync-badge" class="sync-pill" hidden>☁️ Saved</span>
       <span id="user-badge" class="user-chip" hidden></span>
       <button class="btn sm primary" id="signin-btn" data-action="open-auth">Sign In</button>
       <button class="btn sm" id="signout-btn" data-action="sign-out" hidden>Sign Out</button>
-      <button class="icon-btn" id="themebtn" data-action="theme" aria-label="Switch light or dark mode">??</button>
-      <button class="icon-btn" data-action="settings" aria-label="Settings and backup">??</button>
+      <button class="icon-btn" id="themebtn" data-action="theme" aria-label="Switch light or dark mode">🌙</button>
+      <button class="icon-btn" data-action="settings" aria-label="Settings and backup">⚙️</button>
     </div>
   </div>
 </header>
@@ -339,9 +339,9 @@ main{max-width:1120px;margin:0 auto;padding:20px 16px 70px}
 <main id="main"></main>
 
 <nav class="bottom-nav" aria-label="Main">
-  <button class="navbtn" data-action="nav" data-view="dashboard"><span>??</span><span>Home</span></button>
-  <button class="navbtn" data-action="nav" data-view="tracker"><span>?</span><span>Tracker</span></button>
-  <button class="navbtn" data-action="nav" data-view="focus"><span>??</span><span>Focus</span></button>
+  <button class="navbtn" data-action="nav" data-view="dashboard"><span>🏠</span><span>Home</span></button>
+  <button class="navbtn" data-action="nav" data-view="tracker"><span>📋</span><span>Tracker</span></button>
+  <button class="navbtn" data-action="nav" data-view="focus"><span>⏱️</span><span>Focus</span></button>
 </nav>
 
 <div id="toasts" aria-live="polite"></div>
@@ -389,7 +389,6 @@ function normalizeState(st){
     s.units.forEach(u=>{
       if(!Array.isArray(u.topics))u.topics=[];
       u.topics.forEach(t=>{
-        // Ensure 1/2/3 dot status is synced with done state
         if(typeof t.status!=='number'){
           t.status=t.done?3:0;
         }
@@ -404,7 +403,7 @@ state=normalizeState(state);
 const ui={view:'dashboard',filter:'all',q:'',prev:{},modal:null,focusSel:null,pop:null,popUnit:null};
 
 /* ---------- data model ---------- */
-const EMOJIS=['??','??','??','?','??','??','??','??','??','???','??','??','??','??','??','??'];
+const EMOJIS=['📚','💻','⚡','📐','🧪','🧬','📊','📝','🎨','🌐','🤖','🧠','🔬','⚙️','⚖️','💼'];
 const COLORS=['#3a86ff','#8b6cff','#ff6fb5','#ff9f1c','#2ec4b6','#ff5a5f','#22b573','#ffd93d'];
 const STATUS_META={
   0:{label:'Set status',short:'',dot:'s0'},
@@ -498,7 +497,7 @@ function examChip(s){
   const d=daysTo(s.exam);
   if(d<0)return '<span class="chip">Exam date passed</span>';
   const cls=d<=7?'red':d<=21?'orange':'green';
-  return `<span class="chip ${cls}">?? ${d===0?'Exam is today':d+' day'+(d>1?'s':'')+' to exam'}</span>`;
+  return `<span class="chip ${cls}">📅 ${d===0?'Exam is today':d+' day'+(d>1?'s':'')+' to exam'}</span>`;
 }
 function pace(s){
   const st=sStats(s);
@@ -513,16 +512,16 @@ function pace(s){
 
 /* ---------- badges ---------- */
 const BADGES=[
-  {id:'first',ico:'??',name:'First step',desc:'Complete your first topic',c:'#8ad94b',test:c=>c.done>=1},
-  {id:'ten',ico:'??',name:'On a roll',desc:'Complete 10 topics',c:'#ff9f1c',test:c=>c.done>=10},
-  {id:'fifty',ico:'?',name:'Unstoppable',desc:'Complete 50 topics',c:'#ffd93d',test:c=>c.done>=50},
-  {id:'hundred',ico:'??',name:'Century',desc:'Complete 100 topics',c:'#ff6fb5',test:c=>c.done>=100},
-  {id:'unit',ico:'??',name:'Unit crusher',desc:'Finish every topic in a unit',c:'#2ec4b6',test:c=>c.unitsDone>=1},
-  {id:'subject',ico:'??',name:'Subject slayer',desc:'Finish a whole subject',c:'#8b6cff',test:c=>c.subjectsDone>=1},
-  {id:'half',ico:'??',name:'Halfway hero',desc:'Reach 50% overall coverage',c:'#3a86ff',test:c=>c.overall>=50},
-  {id:'streak3',ico:'??',name:'Three in a row',desc:'Study 3 days in a row',c:'#ff9f1c',test:c=>c.streak>=3},
-  {id:'streak7',ico:'???',name:'Week warrior',desc:'Study 7 days in a row',c:'#ff5a5f',test:c=>c.streak>=7},
-  {id:'focus',ico:'??',name:'Deep focus',desc:'Log 100 focus minutes',c:'#2ec4b6',test:c=>c.mins>=100}
+  {id:'first',ico:'🌱',name:'First step',desc:'Complete your first topic',c:'#8ad94b',test:c=>c.done>=1},
+  {id:'ten',ico:'🚀',name:'On a roll',desc:'Complete 10 topics',c:'#ff9f1c',test:c=>c.done>=10},
+  {id:'fifty',ico:'⭐',name:'Unstoppable',desc:'Complete 50 topics',c:'#ffd93d',test:c=>c.done>=50},
+  {id:'hundred',ico:'🏆',name:'Century',desc:'Complete 100 topics',c:'#ff6fb5',test:c=>c.done>=100},
+  {id:'unit',ico:'🎯',name:'Unit crusher',desc:'Finish every topic in a unit',c:'#2ec4b6',test:c=>c.unitsDone>=1},
+  {id:'subject',ico:'🎓',name:'Subject slayer',desc:'Finish a whole subject',c:'#8b6cff',test:c=>c.subjectsDone>=1},
+  {id:'half',ico:'⛰️',name:'Halfway hero',desc:'Reach 50% overall coverage',c:'#3a86ff',test:c=>c.overall>=50},
+  {id:'streak3',ico:'🔥',name:'Three in a row',desc:'Study 3 days in a row',c:'#ff9f1c',test:c=>c.streak>=3},
+  {id:'streak7',ico:'⚡',name:'Week warrior',desc:'Study 7 days in a row',c:'#ff5a5f',test:c=>c.streak>=7},
+  {id:'focus',ico:'⏱️',name:'Deep focus',desc:'Log 100 focus minutes',c:'#2ec4b6',test:c=>c.mins>=100}
 ];
 function badgeCtx(){
   const ss=state.subjects.map(sStats);
@@ -542,7 +541,7 @@ function checkBadges(silent){
 const QUOTES=["Small progress is still progress.","You don't need to be perfect, just consistent.","One topic today beats ten topics someday.","Future you will be glad you started.","Study in sprints, rest in full.","Every tick is a tiny victory.","Start before you feel ready.","Revision is just meeting a topic for the second time.","Discipline is picking what you want most over what you want now.","The syllabus is big, but it only gets smaller."];
 
 function emptyState(){
-  return `<div class="card empty"><div class="big-emoji">??</div><h2>Let's set up your semester</h2>
+  return `<div class="card empty"><div class="big-emoji">📚</div><h2>Let's set up your semester</h2>
   <p>Add a subject, split it into units, list the topics, then tick them off as you study. Your progress bars fill up as you go.</p>
   <div class="row" style="justify-content:center"><button class="btn primary" data-action="new-subject">Add my first subject</button><button class="btn" data-action="sample">Try with sample subjects</button></div></div>`;
 }
@@ -551,7 +550,7 @@ function vDash(){
   const subs=state.subjects;
   if(!subs.length)return emptyState();
   const o=overall(),sk=streak(),tk=dayKey(new Date());
-  const byDay=topicsByDay(),todayDone=byDay[tk]||0,minsToday=state.mins[tk]||0;
+  const byDay=topicsByDay(),todayDone=byDay[tk]||0;
   const days=lastDays(7);
   const hr=new Date().getHours();
   const greet=hr<5?'Burning the midnight oil':hr<12?'Good morning':hr<17?'Good afternoon':hr<22?'Good evening':'Late night grind';
@@ -572,7 +571,7 @@ function vDash(){
       <div class="sc-top"><span class="em">${s.emoji}</span><div class="grow"><b>${esc(s.name)}</b><small>${st.done} of ${st.total} green · ${st.revise} revise · ${st.learnAgain} relearn</small></div><span class="pctb" style="background:${tone(st.pct)}">${st.pct}%</span></div>
       ${bar('dc-'+s.id,st.pct)}
       <div class="minisegs" style="--n:${s.units.length}">${st.us.map((x,i)=>`<i title="Unit ${i+1}: ${x.pct}%" style="${x.total?'background:'+tone(x.pct):''}"></i>`).join('')}</div>
-      <div class="row">${examChip(s)||'<span class="chip">No exam date set</span>'}${st.revise?`<span class="chip yellow">?? ${st.revise} to revise</span>`:''}${st.learnAgain?`<span class="chip red">?? ${st.learnAgain} learn again</span>`:''}</div>
+      <div class="row">${examChip(s)||'<span class="chip">No exam date set</span>'}${st.revise?`<span class="chip yellow">🔄 ${st.revise} to revise</span>`:''}${st.learnAgain?`<span class="chip red">⚠️ ${st.learnAgain} learn again</span>`:''}</div>
     </div>`;
   }).join('');
 
@@ -599,10 +598,10 @@ function vDash(){
   const attn=[];
   subs.forEach(s=>s.units.forEach((u,i)=>{const x=uStats(u);if(x.pct<100)attn.push({s,u,i,x});}));
   attn.sort((p,q)=>((p.x.total===0)-(q.x.total===0))||(p.x.pct-q.x.pct));
-  const attnHtml=attn.length?attn.slice(0,4).map(e=>`<div class="li" role="button" tabindex="0" data-action="goto" data-s="${e.s.id}" data-u="${e.u.id}" style="cursor:pointer"><span class="em">${e.s.emoji}</span><div class="grow"><b>${esc(e.u.name)}</b><small>${esc(e.s.name)}, ${e.x.total?e.x.done+' of '+e.x.total+' topics done':'no topics added yet'}</small></div><span class="pctb" style="background:${e.x.total?tone(e.x.pct):'var(--card)'}">${e.x.pct}%</span></div>`).join(''):'<div class="li"><span class="em">??</span><div><b>Everything is covered</b><small>Use Revise All to start your exam revision pass.</small></div></div>';
+  const attnHtml=attn.length?attn.slice(0,4).map(e=>`<div class="li" role="button" tabindex="0" data-action="goto" data-s="${e.s.id}" data-u="${e.u.id}" style="cursor:pointer"><span class="em">${e.s.emoji}</span><div class="grow"><b>${esc(e.u.name)}</b><small>${esc(e.s.name)}, ${e.x.total?e.x.done+' of '+e.x.total+' topics done':'no topics added yet'}</small></div><span class="pctb" style="background:${e.x.total?tone(e.x.pct):'var(--card)'}">${e.x.pct}%</span></div>`).join(''):'<div class="li"><span class="em">🎉</span><div><b>Everything is covered</b><small>Use Revise All to start your exam revision pass.</small></div></div>';
 
   const exams=subs.filter(s=>s.exam).map(s=>({s,d:daysTo(s.exam)})).sort((p,q)=>p.d-q.d);
-  const examHtml=exams.length?exams.map(e=>`<div class="li"><span class="em">${e.s.emoji}</span><div class="grow"><b>${esc(e.s.name)}</b><small>${e.d<0?'Exam date has passed':pace(e.s)}</small></div>${examChip(e.s)}</div>`).join(''):'<div class="li"><span class="em">??</span><div><b>No exam dates yet</b><small>Edit a subject and add its exam date to see a daily target.</small></div></div>';
+  const examHtml=exams.length?exams.map(e=>`<div class="li"><span class="em">${e.s.emoji}</span><div class="grow"><b>${esc(e.s.name)}</b><small>${e.d<0?'Exam date has passed':pace(e.s)}</small></div>${examChip(e.s)}</div>`).join(''):'<div class="li"><span class="em">📅</span><div><b>No exam dates yet</b><small>Edit a subject and add its exam date to see a daily target.</small></div></div>';
 
   const earned=BADGES.filter(b=>state.badges[b.id]).length;
   const badges=BADGES.map(b=>state.badges[b.id]?`<div class="badge" style="--bg-c:${b.c}"><div class="b-ico">${b.ico}</div><b>${b.name}</b><small>${b.desc}</small></div>`:`<div class="badge locked"><div class="b-ico">${b.ico}</div><b>${b.name}</b><small>${b.desc}</small></div>`).join('');
@@ -612,9 +611,9 @@ function vDash(){
   return `<div class="stack">
   <section class="hero">
     <div>
-      <h1>${greet}${nm} ??</h1>
+      <h1>${greet}${nm} 👋</h1>
       <p class="lead">${lead}</p>
-      <div class="tally"><span>?? ${new Date().toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})}</span><span>?? ${todayDone} done today</span><span>?? ${o.revise} to revise</span><span>?? ${o.learnAgain} learn again</span><span>?? ${sk}-day streak</span></div>
+      <div class="tally"><span>📅 ${new Date().toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})}</span><span>✅ ${todayDone} done today</span><span>🔄 ${o.revise} to revise</span><span>⚠️ ${o.learnAgain} learn again</span><span>🔥 ${sk}-day streak</span></div>
       <div class="row"><button class="btn dark" data-action="nav" data-view="tracker">Continue studying</button><button class="btn" data-action="nav" data-view="focus">Start a focus timer</button></div>
     </div>
     <div class="meter">
@@ -626,12 +625,12 @@ function vDash(){
   </section>
 
   <section class="stats">
-    ${stat('??','#3a86ff',subs.length,'subjects')}
-    ${stat('??','#22b573',o.done,'completed (3)')}
-    ${stat('??','#ffd93d',o.revise,'revise it (2)')}
-    ${stat('??','#ff5a5f',o.learnAgain,'learn again (1)')}
-    ${stat('??','#ff6fb5',o.unitsDone+'/'+o.units,'units done')}
-    ${stat('??','#2ec4b6',Object.values(state.mins).reduce((a,b)=>a+b,0),'focus min')}
+    ${stat('📚','#3a86ff',subs.length,'subjects')}
+    ${stat('✅','#22b573',o.done,'completed (3)')}
+    ${stat('🔄','#ffd93d',o.revise,'revise it (2)')}
+    ${stat('⚠️','#ff5a5f',o.learnAgain,'learn again (1)')}
+    ${stat('🎯','#ff6fb5',o.unitsDone+'/'+o.units,'units done')}
+    ${stat('⏱️','#2ec4b6',Object.values(state.mins).reduce((a,b)=>a+b,0),'focus min')}
   </section>
 
   <section><div class="row" style="justify-content:space-between;margin-bottom:12px"><h2 style="font-size:24px">Your subjects</h2><button class="btn sm" data-action="new-subject">Add subject</button></div><div class="subj-grid">${subjCards}</div></section>
@@ -670,9 +669,9 @@ function topicRow(t,u){
       ${st>0?`<span class="status-lbl s${st}">${meta.short}</span>`:''}
     </div>
     <button class="diffbtn d${t.diff}" data-action="cycle-diff" title="Tap to set difficulty">${['level','Easy','Medium','Hard'][t.diff]}</button>
-    <button class="icon ${t.star?'on':''}" data-action="star" title="Mark as important" aria-label="Mark as important">${t.star?'?':'?'}</button>
-    <button class="icon" data-action="edit-topic" title="Edit" aria-label="Edit topic">?</button>
-    <button class="icon" data-action="del-topic" title="Delete" aria-label="Delete topic">?</button>
+    <button class="icon ${t.star?'on':''}" data-action="star" title="Mark as important" aria-label="Mark as important">${t.star?'★':'☆'}</button>
+    <button class="icon" data-action="edit-topic" title="Edit" aria-label="Edit topic">✏️</button>
+    <button class="icon" data-action="del-topic" title="Delete" aria-label="Delete topic">🗑️</button>
   </div>`;
 }
 
@@ -684,21 +683,21 @@ function unitCard(s,u,i){
     <div class="nomatch" hidden>No topics match this filter.</div></div>
     <div class="addrow"><input class="inp addinp" maxlength="140" placeholder="Add a topic and press Enter" aria-label="New topic"><button class="btn primary" data-action="add-topic">Add</button><button class="btn" data-action="bulk">Bulk add</button></div>
     <div class="uacts">
-      <button class="btn sm" data-action="mark-all">?? Mark all completed</button>
-      <button class="btn sm revise" data-action="revise-unit">?? Revise all in unit</button>
-      <button class="btn sm" data-action="relearn-unit">?? Need to learn all</button>
+      <button class="btn sm" data-action="mark-all">✅ Mark all completed</button>
+      <button class="btn sm revise" data-action="revise-unit">🔄 Revise all in unit</button>
+      <button class="btn sm" data-action="relearn-unit">⚠️ Need to learn all</button>
       <button class="btn sm" data-action="reset-unit">Clear ticks</button>
       <button class="btn sm danger" data-action="del-unit">Remove unit</button>
     </div>
   </div>`:'';
   return `<section class="card unit" id="u-${u.id}" data-u="${u.id}">
-    ${x.pct===100?`<div class="stamp ${ui.popUnit===u.id?'slam':''}">Covered ?</div>`:''}
+    ${x.pct===100?`<div class="stamp ${ui.popUnit===u.id?'slam':''}">Covered 🎉</div>`:''}
     <div class="unit-h" role="button" tabindex="0" aria-expanded="${open}" data-action="toggle-unit">
       <div class="ubadge" style="background:${c}">${i+1}</div>
       <div class="grow"><div class="uname">${esc(u.name)}</div><div class="usub">${sub}</div></div>
-      <button class="icon" data-action="rename-unit" title="Rename unit" aria-label="Rename unit">?</button>
+      <button class="icon" data-action="rename-unit" title="Rename unit" aria-label="Rename unit">✏️</button>
       <span class="pctb" style="background:${c}">${x.pct}%</span>
-      <span class="chev ${open?'open':''}" aria-hidden="true">?</span>
+      <span class="chev ${open?'open':''}" aria-hidden="true">▾</span>
     </div>
     ${bar('ub-'+u.id,x.pct)}
     ${body}
@@ -713,11 +712,11 @@ function vTracker(){
   const chips=subs.map(x=>`<button class="schip ${x.id===s.id?'on':''}" style="--sc:${x.color}" data-action="pick-subject" data-s="${x.id}"><span>${x.emoji}</span>${esc(x.name)}</button>`).join('')+`<button class="schip add" data-action="new-subject">+ New subject</button>`;
   const filters=[
     ['all','All'],
-    ['s1','?? 1: Learn again'],
-    ['s2','?? 2: Revise it'],
-    ['s3','?? 3: Completed'],
+    ['s1','⚠️ 1: Learn again'],
+    ['s2','🔄 2: Revise it'],
+    ['s3','✅ 3: Completed'],
     ['pending','Pending'],
-    ['star','? Important']
+    ['star','★ Important']
   ].map(f=>`<button class="fchip ${ui.filter===f[0]?'on':''}" data-action="filter" data-f="${f[0]}">${f[1]}</button>`).join('');
   const segs=`<div class="segs" style="--n:${s.units.length}">${st.us.map((x,i)=>`<button class="seg" data-action="jump" data-u="${s.units[i].id}" title="${esc(s.units[i].name)}"><span class="seg-l">Unit ${i+1}</span>${bar('sg-'+s.units[i].id,x.pct,'thin')}<span class="seg-p">${x.pct}%</span></button>`).join('')}</div>`;
   return `<div class="stack">
@@ -727,7 +726,7 @@ function vTracker(){
       <div class="emoji-badge">${s.emoji}</div>
       <div class="grow"><h2>${esc(s.name)}</h2><div class="row">${examChip(s)}<span class="chip">${esc(pace(s))}</span></div></div>
       <div class="row">
-        <button class="btn sm revise" data-action="revise-all-subject" title="Set all topics in this subject to Yellow (Revise it) for exam preparation">?? Revise all (Exam Mode)</button>
+        <button class="btn sm revise" data-action="revise-all-subject" title="Set all topics in this subject to Yellow (Revise it) for exam preparation">🔄 Revise all (Exam Mode)</button>
         <button class="btn sm" data-action="edit-subject">Edit subject</button>
       </div>
     </div>
@@ -738,17 +737,17 @@ function vTracker(){
         ${bar('sb-'+s.id,st.pct,'tall')}
         <div class="left-note">${100-st.pct}% still left to cover</div>
         <div class="mini-stats">
-          <span class="chip green">?? 3: ${st.done} completed</span>
-          <span class="chip yellow">?? 2: ${st.revise} revise it</span>
-          <span class="chip red">?? 1: ${st.learnAgain} learn again</span>
-          <span class="chip">?? ${st.unitsDone} of ${s.units.length} units finished</span>
+          <span class="chip green">✅ 3: ${st.done} completed</span>
+          <span class="chip yellow">🔄 2: ${st.revise} revise it</span>
+          <span class="chip red">⚠️ 1: ${st.learnAgain} learn again</span>
+          <span class="chip">🎯 ${st.unitsDone} of ${s.units.length} units finished</span>
         </div>
       </div>
     </div>
     ${segs}
     ${st.empty?`<div class="warn">${st.empty} unit${st.empty>1?'s have':' has'} no topics yet. Add the topics from your syllabus so the percentage is accurate. Each unit counts equally.</div>`:''}
   </section>
-  <div class="toolbar"><input id="q" class="inp" placeholder="?? Search topics" value="${esc(ui.q)}" aria-label="Search topics">${filters}<button class="btn sm" data-action="expand-all">Expand all</button><button class="btn sm" data-action="collapse-all">Collapse all</button></div>
+  <div class="toolbar"><input id="q" class="inp" placeholder="🔍 Search topics" value="${esc(ui.q)}" aria-label="Search topics">${filters}<button class="btn sm" data-action="expand-all">Expand all</button><button class="btn sm" data-action="collapse-all">Collapse all</button></div>
   ${s.units.map((u,i)=>unitCard(s,u,i)).join('')}
   <div><button class="btn" data-action="add-unit">+ Add another unit</button></div>
   </div>`;
@@ -788,7 +787,7 @@ function vFocus(){
    <section class="card">
      <h2>Focus minutes this week</h2>
      <div class="wk">${vals.map(x=>`<div class="wk-c ${x.today?'today':''}"><span class="wk-v">${x.v||''}</span><div class="wk-bar"><i class="${x.v?'':'z'}" style="height:${x.v/mx*100}%"></i></div><small>${x.label}</small></div>`).join('')}</div>
-     <div class="mini-stats" style="margin-top:16px"><span class="chip">?? ${state.sess[tk]||0} sessions today</span><span class="chip">? ${state.mins[tk]||0} min today</span><span class="chip">?? ${totalMins} min in total</span></div>
+     <div class="mini-stats" style="margin-top:16px"><span class="chip">🎯 ${state.sess[tk]||0} sessions today</span><span class="chip">⚡ ${state.mins[tk]||0} min today</span><span class="chip">⏱️ ${totalMins} min in total</span></div>
      <p class="muted" style="margin:14px 0 0;font-size:14px">Tip: 25 minutes on, 5 minutes off. After four rounds, take a longer break. Finished sessions count towards your streak.</p>
    </section></div></div>`;
 }
@@ -836,8 +835,8 @@ function finishTimer(){
   if(wasFocus){
     const m=Math.round(timer.total/60);addMins(m);
     const k=dayKey(new Date());state.sess[k]=(state.sess[k]||0)+1;
-    toast(`?? Focus session done, +${m} min`);confetti(90);
-  }else toast('Break over. Ready for the next round? ??');
+    toast(`🎉 Focus session done, +${m} min`);confetti(90);
+  }else toast('Break over. Ready for the next round? 💪');
   timer.left=timer.total;save();render();
   if(wasFocus&&timer.topic){
     const f=findTopic(timer.topic);
@@ -855,7 +854,7 @@ function finishTimer(){
 function theme(){return state.theme||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
 function render(){
   document.documentElement.setAttribute('data-theme',theme());
-  $('#themebtn').textContent=theme()==='dark'?'??':'??';
+  $('#themebtn').textContent=theme()==='dark'?'☀️':'🌙';
   $$('.navbtn').forEach(b=>b.classList.toggle('on',b.dataset.view===ui.view));
   const m=$('#main');
   m.innerHTML=ui.view==='dashboard'?vDash():ui.view==='tracker'?vTracker():vFocus();
@@ -937,7 +936,7 @@ function authModal(){
   openModal(`<h3>Sign in to SyllabusPal</h3>
     <p class="muted" style="margin:0 0 14px;font-size:14px">Sign in to automatically back up and sync your syllabus progress across all your devices.</p>
     <button type="button" class="btn primary" id="auth-google" style="width:100%;display:flex;justify-content:center;gap:8px;align-items:center">
-      <span>??</span><span>Continue with Google</span>
+      <span>🌐</span><span>Continue with Google</span>
     </button>
     <div class="auth-divider">or use email &amp; password</div>
     <label class="lbl" for="auth-email">Email address</label>
@@ -1005,12 +1004,12 @@ function settingsModal(){
    <label class="lbl" for="s-name">Your name <small>(shown on the home page)</small></label>
    <input id="s-name" class="inp" maxlength="30" value="${esc(state.name)}" placeholder="What should we call you?">
    <label class="lbl">Look</label>
-   <div class="seg-opts">${[['light','?? Light'],['dark','?? Dark'],['','?? Match device']].map(o=>`<button class="fchip ${(state.theme||'')===o[0]?'on':''}" data-th="${o[0]}">${o[1]}</button>`).join('')}</div>
+   <div class="seg-opts">${[['light','☀️ Light'],['dark','🌙 Dark'],['','📱 Match device']].map(o=>`<button class="fchip ${(state.theme||'')===o[0]?'on':''}" data-th="${o[0]}">${o[1]}</button>`).join('')}</div>
    <label class="lbl">Backup</label>
    <div class="seg-opts"><button class="btn sm" id="s-exp">Download backup</button><button class="btn sm" id="s-imp">Restore from file</button><button class="btn sm danger" id="s-rst">Erase everything</button></div>
    <p class="muted" style="font-size:13px;margin:12px 0 0">${persistent?'Your progress is saved locally and automatically synced to Firebase when you are signed in.':'This browser is blocking local storage. Sign in to save your progress to Firebase cloud.'}</p>
    <div class="mactions"><span class="grow"></span><button class="btn primary" id="s-ok">Done</button></div>`,m=>{
-    $$('[data-th]',m).forEach(b=>b.onclick=()=>{state.theme=b.dataset.th||null;save();document.documentElement.setAttribute('data-theme',theme());$$('[data-th]',m).forEach(x=>x.classList.toggle('on',x===b));$('#themebtn').textContent=theme()==='dark'?'??':'??';});
+    $$('[data-th]',m).forEach(b=>b.onclick=()=>{state.theme=b.dataset.th||null;save();document.documentElement.setAttribute('data-theme',theme());$$('[data-th]',m).forEach(x=>x.classList.toggle('on',x===b));$('#themebtn').textContent=theme()==='dark'?'☀️':'🌙';});
     $('#s-ok',m).onclick=()=>{state.name=$('#s-name',m).value.trim();save();closeModal();render();};
     $('#s-exp',m).onclick=()=>{
       try{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='syllabuspal-backup-'+dayKey(new Date())+'.json';document.body.appendChild(a);a.click();a.remove();toast('Backup downloaded');}
@@ -1023,13 +1022,13 @@ function settingsModal(){
 
 /* ---------- samples ---------- */
 const SAMPLES=[
- {name:'Data Structures',emoji:'??',color:'#3a86ff',units:[
+ {name:'Data Structures',emoji:'💻',color:'#3a86ff',units:[
   {name:'Introduction and arrays',topics:['Time and space complexity','Asymptotic notations','Arrays and 2D arrays','Linear and binary search','Basic sorting techniques']},
   {name:'Linked lists, stacks and queues',topics:['Singly linked list','Doubly and circular linked lists','Stack operations','Infix to postfix conversion','Queue and circular queue','Priority queue']},
   {name:'Trees',topics:['Binary trees and traversals','Binary search tree operations','AVL trees','Heaps and heap sort','B-trees']},
   {name:'Graphs',topics:['Graph representations','BFS and DFS','Dijkstra shortest path','Minimum spanning trees','Topological sort']},
   {name:'Hashing and advanced sorting',topics:['Hash functions','Collision resolution','Merge sort','Quick sort','Radix and counting sort']}]},
- {name:'Engineering Mathematics',emoji:'??',color:'#ff9f1c',units:[
+ {name:'Engineering Mathematics',emoji:'📐',color:'#ff9f1c',units:[
   {name:'Matrices',topics:['Rank of a matrix','Eigenvalues and eigenvectors','Cayley-Hamilton theorem','Diagonalisation']},
   {name:'Differential calculus',topics:['Successive differentiation','Partial derivatives',"Euler's theorem",'Maxima and minima']},
   {name:'Integral calculus',topics:['Beta and Gamma functions','Double integrals','Triple integrals','Change of variables']},
@@ -1056,8 +1055,8 @@ function loadSamples(){
 /* ---------- actions ---------- */
 function celebrate(s,u,bu,bs){
   const au=uStats(u).pct,as=sStats(s).pct;
-  if(as===100&&bs<100){ui.popUnit=u.id;render();confetti(280);toast(`?? ${s.name} fully covered!`);}
-  else if(au===100&&bu<100){ui.popUnit=u.id;render();confetti(150);toast(`?? ${u.name} complete!`);}
+  if(as===100&&bs<100){ui.popUnit=u.id;render();confetti(280);toast(`🎉 ${s.name} fully covered!`);}
+  else if(au===100&&bu<100){ui.popUnit=u.id;render();confetti(150);toast(`🎉 ${u.name} complete!`);}
 }
 function curUnit(el){const s=activeSubject();const ue=el.closest('[data-u]');return{s,u:s.units.find(x=>x.id===ue.dataset.u)};}
 function scrollToUnit(id){setTimeout(()=>{const e=document.getElementById('u-'+id);if(e){e.scrollIntoView({behavior:'smooth',block:'start'});e.classList.add('flash');}},60);}
@@ -1144,7 +1143,7 @@ const actions={
     const prev=u.topics.map(t=>({id:t.id,status:t.status,done:t.done,doneAt:t.doneAt}));
     u.topics.forEach(t=>applyTopicStatus(t,3));
     save();render();celebrate(s,u,bu,bs);checkBadges();
-    toast(`?? All topics in "${u.name}" marked Completed`,()=>{
+    toast(`✅ All topics in "${u.name}" marked Completed`,()=>{
       prev.forEach(p=>{const t=u.topics.find(x=>x.id===p.id);if(t){t.status=p.status;t.done=p.done;t.doneAt=p.doneAt;}});
       save();render();
     });
@@ -1155,7 +1154,7 @@ const actions={
     const prev=u.topics.map(t=>({id:t.id,status:t.status,done:t.done,doneAt:t.doneAt}));
     u.topics.forEach(t=>applyTopicStatus(t,2));
     save();render();
-    toast(`?? "${u.name}" set to Revise it`,()=>{
+    toast(`🔄 "${u.name}" set to Revise it`,()=>{
       prev.forEach(p=>{const t=u.topics.find(x=>x.id===p.id);if(t){t.status=p.status;t.done=p.done;t.doneAt=p.doneAt;}});
       save();render();
     });
@@ -1166,7 +1165,7 @@ const actions={
     const prev=u.topics.map(t=>({id:t.id,status:t.status,done:t.done,doneAt:t.doneAt}));
     u.topics.forEach(t=>applyTopicStatus(t,1));
     save();render();
-    toast(`?? "${u.name}" set to Need to learn again`,()=>{
+    toast(`⚠️ "${u.name}" set to Need to learn again`,()=>{
       prev.forEach(p=>{const t=u.topics.find(x=>x.id===p.id);if(t){t.status=p.status;t.done=p.done;t.doneAt=p.doneAt;}});
       save();render();
     });
@@ -1178,7 +1177,7 @@ const actions={
     const prev=allTopics.map(t=>({id:t.id,status:t.status,done:t.done,doneAt:t.doneAt}));
     s.units.forEach(u=>{u.collapsed=false;u.topics.forEach(t=>applyTopicStatus(t,2));});
     save();render();
-    toast(`?? Exam mode: all ${allTopics.length} topics in "${s.name}" set to Revise it`,()=>{
+    toast(`🔄 Exam mode: all ${allTopics.length} topics in "${s.name}" set to Revise it`,()=>{
       prev.forEach(p=>{
         for(const u of s.units){const t=u.topics.find(x=>x.id===p.id);if(t){t.status=p.status;t.done=p.done;t.doneAt=p.doneAt;break;}}
       });
@@ -1297,7 +1296,7 @@ render();
   // Save user progress to Firestore automatically (debounced)
   window.__syncToFirebase = function(stateObj) {
     if (!currentUser) return;
-    setSyncStatus("?? Syncing...");
+    setSyncStatus("☁️ Syncing...");
     clearTimeout(syncTimeout);
     syncTimeout = setTimeout(async () => {
       try {
@@ -1307,10 +1306,10 @@ render();
           updatedAt: Date.now(),
           email: currentUser.email || ""
         }, { merge: true });
-        setSyncStatus("?? Saved");
+        setSyncStatus("☁️ Saved");
       } catch (err) {
         console.error("Error saving progress:", err);
-        setSyncStatus("?? Sync error");
+        setSyncStatus("⚠️ Sync error");
       }
     }, 350);
   };
@@ -1359,8 +1358,8 @@ render();
       signInBtn.hidden = true;
       signOutBtn.hidden = false;
       userBadge.hidden = false;
-      userBadge.textContent = "?? " + (user.displayName || user.email || "User");
-      setSyncStatus("?? Loading...");
+      userBadge.textContent = "👤 " + (user.displayName || user.email || "User");
+      setSyncStatus("☁️ Loading...");
 
       try {
         const userRef = doc(db, "users", user.uid);
@@ -1369,13 +1368,12 @@ render();
 
         if (snap.exists() && snap.data().progress) {
           const cloudProgress = snap.data().progress;
-          // If cloud has subjects or is newer than empty local state, load cloud progress
           if ((cloudProgress.subjects && cloudProgress.subjects.length > 0) || !localState?.subjects?.length) {
             if (!cloudProgress.name && user.displayName) {
               cloudProgress.name = user.displayName.split(" ")[0];
             }
             window.__loadCloudState(cloudProgress);
-            if (window.__toast) window.__toast("?? Progress loaded from cloud");
+            if (window.__toast) window.__toast("☁️ Progress loaded from cloud");
           } else if (localState && localState.subjects && localState.subjects.length > 0) {
             window.__syncToFirebase(localState);
           }
@@ -1385,12 +1383,12 @@ render();
             window.__loadCloudState(localState);
           }
           window.__syncToFirebase(localState);
-          if (window.__toast) window.__toast("?? Local progress backed up to cloud");
+          if (window.__toast) window.__toast("☁️ Local progress backed up to cloud");
         }
-        setSyncStatus("?? Saved");
+        setSyncStatus("☁️ Saved");
       } catch (err) {
         console.error("Error loading cloud progress:", err);
-        setSyncStatus("?? Offline");
+        setSyncStatus("⚠️ Offline");
       }
     } else {
       signInBtn.hidden = false;
