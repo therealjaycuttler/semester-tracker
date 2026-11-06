@@ -1,0 +1,2022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SyllabusPal: track every topic, ace every exam</title>
+<style>
+:root{
+  --paper:#eef3ff; --grid:rgba(20,33,61,.07); --card:#ffffff; --card2:#f3f6ff;
+  --ink:#14213d; --muted:#52607f; --bd:#14213d; --sh:#14213d; --track:#e1e8fb;
+  --red:#ff5a5f; --orange:#ff9f1c; --yellow:#ffd93d; --lime:#8ad94b; --green:#22b573;
+  --blue:#3a86ff; --grape:#8b6cff; --pink:#ff6fb5; --teal:#2ec4b6;
+  --on:#14213d; --stamp:#0b7a47;
+  --r-lg:24px; --r-md:16px; --r-sm:12px;
+  --display:"Avenir Next","Arial Rounded MT Bold","Segoe UI Black","Arial Black",system-ui,sans-serif;
+  --body:"Avenir Next","Segoe UI","Helvetica Neue",system-ui,-apple-system,sans-serif;
+  --hand:"Bradley Hand","Noteworthy","Segoe Print","Chalkboard SE","Marker Felt","Comic Sans MS",cursive;
+  color-scheme:light;
+}
+[data-theme="dark"]{
+  --paper:#0f1526; --grid:rgba(160,180,255,.07); --card:#18203a; --card2:#222c50;
+  --ink:#eef2ff; --muted:#a3b3de; --bd:#7d8dc4; --sh:#04060c; --track:#252f52; --stamp:#5ef0a8;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme]){
+    --paper:#0f1526; --grid:rgba(160,180,255,.07); --card:#18203a; --card2:#222c50;
+    --ink:#eef2ff; --muted:#a3b3de; --bd:#7d8dc4; --sh:#04060c; --track:#252f52; --stamp:#5ef0a8;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;font:16px/1.5 var(--body);color:var(--ink);min-height:100vh;
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+h1,h2,h3{font-family:var(--display);font-weight:900;letter-spacing:-.02em;line-height:1.1;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.grow{flex:1;min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.hide{display:none!important}
+.hand{font-family:var(--hand);font-weight:700}
+.muted{color:var(--muted)}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:2px solid var(--bd)}
+.top-in{max-width:1120px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font:900 21px var(--display);letter-spacing:-.03em}
+.logo-mark{width:38px;height:38px;border-radius:12px;background:var(--yellow);border:2px solid var(--bd);box-shadow:2px 2px 0 var(--sh);display:grid;place-items:center;transform:rotate(-6deg);font-size:20px}
+.nav{display:flex;gap:4px;margin:0 auto;padding:4px;border:2px solid var(--bd);border-radius:14px;background:var(--card)}
+.navbtn{border:0;background:transparent;padding:7px 15px;border-radius:10px;font-weight:800;display:flex;gap:7px;align-items:center}
+.navbtn.on{background:var(--yellow);color:var(--on);box-shadow:inset 0 0 0 2px var(--bd)}
+.top-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:2px solid var(--bd);background:var(--card);box-shadow:2px 2px 0 var(--sh);font-size:18px;display:grid;place-items:center}
+.icon-btn:active{transform:translate(2px,2px);box-shadow:none}
+.pill{border:2px solid var(--bd);background:var(--yellow);color:var(--on);border-radius:99px;padding:6px 12px;font-weight:800;box-shadow:2px 2px 0 var(--sh)}
+.sync-pill{font-size:12px;font-weight:800;padding:4px 10px;border-radius:99px;border:2px solid var(--bd);background:var(--card2);display:inline-flex;align-items:center;gap:5px}
+.user-chip{font-size:13px;font-weight:800;padding:5px 10px;border-radius:99px;border:2px solid var(--bd);background:var(--card);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bottom-nav{display:none}
+
+main{max-width:1120px;margin:0 auto;padding:20px 16px 70px}
+.stack{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+.cols{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+
+/* surfaces */
+.card{min-width:0;background:var(--card);border:2px solid var(--bd);border-radius:var(--r-lg);box-shadow:5px 5px 0 var(--sh);padding:18px;position:relative}
+.card h2{font-size:20px;margin-bottom:12px}
+.card .sub{color:var(--muted);font-size:14px;margin:-6px 0 12px}
+
+/* buttons & inputs */
+.btn{border:2px solid var(--bd);border-radius:var(--r-sm);padding:9px 15px;font-weight:800;font-size:14px;background:var(--card);color:var(--ink);box-shadow:2px 2px 0 var(--sh);transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--sh)}
+.btn.primary{background:var(--yellow);color:var(--on)}
+.btn.revise{background:var(--yellow);color:var(--on)}
+.btn.danger{background:var(--red);color:var(--on)}
+.btn.sm{padding:6px 11px;font-size:13px;box-shadow:2px 2px 0 var(--sh)}
+.inp{width:100%;padding:11px 13px;border-radius:var(--r-sm);border:2px solid var(--bd);background:var(--card);color:var(--ink)}
+.inp::placeholder{color:var(--muted)}
+.icon{border:0;background:transparent;width:30px;height:30px;border-radius:99px;color:var(--muted);font-size:15px;display:grid;place-items:center;flex:none}
+.icon:hover{background:var(--card2);color:var(--ink)}
+.icon.on{color:#e08a00}
+
+/* hero */
+.hero{min-width:0;background:var(--yellow);color:var(--on);border:2px solid var(--bd);border-radius:28px;box-shadow:6px 6px 0 var(--sh);padding:26px;display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:center;position:relative}
+.hero h1{font-size:clamp(28px,5vw,46px);margin-bottom:10px}
+.hero .lead{font-size:17px;margin:0 0 16px;max-width:46ch}
+.hero .tally{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.hero .tally span{background:#fff;border:2px solid #14213d;border-radius:99px;padding:3px 12px;font-weight:700;font-size:14px;color:#14213d}
+.hero .btn{background:#fff;color:#14213d;border-color:#14213d;box-shadow:2px 2px 0 #14213d}
+.hero .btn.dark{background:#14213d;color:#fff}
+.meter{background:#fff;color:#14213d;border:2px solid #14213d;border-radius:20px;padding:18px;box-shadow:4px 4px 0 #14213d;transform:rotate(1.5deg)}
+.meter .big{font:900 clamp(54px,9vw,84px)/1 var(--display);letter-spacing:-.04em}
+.meter .big small{font-size:.42em;letter-spacing:0}
+.meter .bar{background:#e1e8fb;border-color:#14213d;margin:10px 0 8px}
+.meter .note{font-family:var(--hand);font-weight:700;font-size:20px}
+
+/* stats */
+.stats{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.stat{display:flex;gap:12px;align-items:center;background:var(--card);border:2px solid var(--bd);border-radius:var(--r-md);box-shadow:3px 3px 0 var(--sh);padding:12px 14px}
+.stat .ico{width:44px;height:44px;border-radius:12px;border:2px solid var(--bd);display:grid;place-items:center;font-size:21px;flex:none;color:var(--on)}
+.stat b{display:block;font:900 26px/1.05 var(--display)}
+.stat span{font-size:13px;color:var(--muted)}
+
+/* progress bars */
+.bar{height:18px;border:2px solid var(--bd);border-radius:99px;background:var(--track);overflow:hidden}
+.bar.thin{height:11px}
+.bar.tall{height:24px}
+.fill{height:100%;width:0;border-right:2px solid var(--bd);transition:width .9s cubic-bezier(.2,.9,.25,1);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.38) 0 7px,transparent 7px 14px)}
+.fill[data-w="0"]{border-right:0}
+.pctb{display:inline-block;min-width:54px;text-align:center;border:2px solid var(--bd);border-radius:99px;padding:2px 10px;font-weight:900;color:var(--on);font-size:15px}
+
+/* rings */
+.ring{position:relative;display:inline-grid;place-items:center;flex:none}
+.ring svg{position:absolute;inset:0}
+.rfill{transition:stroke-dashoffset .9s cubic-bezier(.2,.9,.25,1)}
+.ring-txt{position:relative;text-align:center;display:grid;gap:2px}
+.ring-txt b{font-family:var(--display);font-weight:900;font-size:calc(var(--sz)*.25);line-height:1}
+.ring-txt small{font-size:calc(var(--sz)*.095);color:var(--muted);line-height:1.1}
+
+/* subject cards */
+.subj-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr))}
+.subj-card{background:var(--card);border:2px solid var(--bd);border-radius:var(--r-md);box-shadow:4px 4px 0 var(--sh);padding:14px;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;cursor:pointer;border-top:10px solid var(--sc);transition:transform .08s,box-shadow .08s}
+.subj-card:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--sh)}
+.sc-top{display:flex;gap:10px;align-items:center}
+.sc-top .em{width:42px;height:42px;border-radius:12px;border:2px solid var(--bd);background:var(--sc);display:grid;place-items:center;font-size:21px;flex:none}
+.sc-top b{display:block;font-size:17px;line-height:1.2}
+.sc-top small{color:var(--muted)}
+.minisegs{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:4px}
+.minisegs i{height:11px;border:2px solid var(--bd);border-radius:5px;background:var(--track)}
+.chip{display:inline-flex;gap:6px;align-items:center;border:2px solid var(--bd);border-radius:99px;padding:2px 10px;font-size:13px;font-weight:700;background:var(--card2);width:max-content;max-width:100%}
+.chip.red{background:var(--red);color:var(--on)}
+.chip.orange{background:var(--orange);color:var(--on)}
+.chip.yellow{background:var(--yellow);color:var(--on)}
+.chip.green{background:var(--lime);color:var(--on)}
+
+/* charts */
+.wk{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:190px}
+.wk-c{display:grid;grid-template-rows:20px 1fr 20px;height:100%;text-align:center;font-size:12px}
+.wk-v{font-weight:800}
+.wk-bar{display:flex;align-items:flex-end;justify-content:center}
+.wk-bar i{display:block;width:100%;max-width:38px;border:2px solid var(--bd);border-bottom:0;border-radius:9px 9px 0 0;background:var(--blue)}
+.wk-bar i.z{border:0;height:0}
+.wk-c.today small{font-weight:900}
+.wk-c.today .wk-bar i{background:var(--pink)}
+.wk-c small{color:var(--muted)}
+.donut-wrap{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.donut{width:136px;height:136px;border-radius:50%;border:2px solid var(--bd);display:grid;place-items:center;flex:none}
+.donut .hole{width:84px;height:84px;border-radius:50%;background:var(--card);border:2px solid var(--bd);display:grid;place-items:center;text-align:center;line-height:1.05}
+.donut .hole b{font:900 26px var(--display)}
+.donut .hole small{font-size:11px;color:var(--muted)}
+.legend{display:grid;gap:8px;font-size:14px}
+.legend div{display:flex;gap:8px;align-items:center}
+.legend i{width:16px;height:16px;border-radius:5px;border:2px solid var(--bd);display:inline-block}
+.heat{display:grid;gap:6px;grid-template-columns:minmax(110px,1.3fr) repeat(var(--n),minmax(44px,1fr));align-items:center;overflow-x:auto;padding-bottom:4px}
+.heat .hl{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.heat .hc{height:38px;border:2px solid var(--bd);border-radius:10px;display:grid;place-items:center;font-weight:900;font-size:13px;color:var(--on);background:var(--card2);cursor:pointer}
+.heat .hc.none{color:var(--muted);font-weight:700;border-style:dashed}
+.heat .hh{font-size:12px;color:var(--muted);text-align:center;font-weight:700}
+.keybar{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;font-size:12px;color:var(--muted);align-items:center}
+.keybar i{width:16px;height:16px;border:2px solid var(--bd);border-radius:5px;display:inline-block}
+
+.list{display:grid;gap:10px}
+.li{display:flex;gap:12px;align-items:center;padding:10px 12px;border:2px solid var(--bd);border-radius:14px;background:var(--card2)}
+.li .em{font-size:22px}
+.li b{display:block;line-height:1.25}
+.li small{color:var(--muted)}
+
+.badges{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.badge{border:2px solid var(--bd);border-radius:16px;padding:12px;text-align:center;box-shadow:3px 3px 0 var(--sh);background:var(--bg-c,var(--card2));color:var(--on)}
+.badge:nth-child(odd){transform:rotate(-1.5deg)}
+.badge:nth-child(even){transform:rotate(1.2deg)}
+.badge .b-ico{font-size:30px}
+.badge b{display:block;line-height:1.2}
+.badge small{display:block;font-size:12px;line-height:1.25;margin-top:2px}
+.badge.locked{background:transparent;border-style:dashed;box-shadow:none;color:var(--muted);transform:none}
+.badge.locked .b-ico{filter:grayscale(1);opacity:.55}
+.quote{font-family:var(--hand);font-weight:700;font-size:21px;text-align:center;padding:10px 20px;color:var(--ink)}
+
+/* tracker */
+.chips-row{display:flex;gap:10px;overflow-x:auto;padding:4px 4px 10px;margin:-4px}
+.schip{flex:none;display:flex;gap:8px;align-items:center;border:2px solid var(--bd);border-radius:99px;padding:7px 14px;font-weight:800;background:var(--card);box-shadow:2px 2px 0 var(--sh)}
+.schip.on{background:var(--sc,var(--yellow));color:var(--on)}
+.schip.add{background:transparent;border-style:dashed;box-shadow:none}
+.subj-head{border-top:12px solid var(--sc)}
+.sh-top{display:flex;gap:14px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.emoji-badge{width:58px;height:58px;border-radius:16px;border:2px solid var(--bd);background:var(--sc);display:grid;place-items:center;font-size:30px;box-shadow:3px 3px 0 var(--sh);transform:rotate(-4deg);flex:none}
+.sh-top h2{font-size:clamp(24px,4vw,34px);margin:0 0 6px}
+.sh-body{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.sh-stats{flex:1;min-width:240px;display:grid;gap:10px}
+.sh-stats .big{font-size:18px}
+.sh-stats .big b{font:900 30px var(--display)}
+.sh-stats .left-note{font-family:var(--hand);font-weight:700;font-size:21px}
+.mini-stats{display:flex;gap:8px;flex-wrap:wrap}
+.warn{background:var(--yellow);color:var(--on);border:2px dashed var(--bd);border-radius:12px;padding:8px 12px;font-size:14px;font-weight:700;margin-top:14px}
+.segs{display:grid;grid-template-columns:repeat(var(--n),minmax(70px,1fr));gap:10px;margin-top:18px;overflow-x:auto;padding-bottom:4px}
+.seg{display:grid;gap:5px;text-align:left;border:0;background:transparent;padding:0;min-width:0}
+.seg .seg-l{font-weight:800;font-size:13px}
+.seg .seg-p{font-size:12px;color:var(--muted);font-weight:700}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.toolbar .inp{flex:1;min-width:180px;max-width:340px}
+.fchip{border:2px solid var(--bd);background:var(--card);border-radius:99px;padding:6px 13px;font-weight:800;font-size:13px}
+.fchip.on{background:var(--ink);color:var(--paper)}
+
+.unit{padding:0;overflow:visible;scroll-margin-top:84px}
+.unit>.bar{margin:0 18px 14px}
+.unit-h{display:flex;gap:12px;align-items:center;padding:18px 18px 12px;cursor:pointer;border-radius:var(--r-lg)}
+.ubadge{width:42px;height:42px;border-radius:13px;border:2px solid var(--bd);display:grid;place-items:center;font:900 19px var(--display);color:var(--on);flex:none}
+.uname{font:900 19px/1.2 var(--display);letter-spacing:-.01em}
+.usub{font-size:13px;color:var(--muted)}
+.chev{font-size:18px;transition:transform .2s;color:var(--muted)}
+.chev.open{transform:rotate(180deg)}
+.unit-b{padding:0 18px 18px}
+.topic{display:flex;gap:10px;align-items:center;padding:8px 8px 8px 6px;border-radius:12px;flex-wrap:wrap}
+.topic:hover{background:var(--card2)}
+.chk{width:28px;height:28px;border-radius:9px;border:2px solid var(--bd);background:var(--card);display:grid;place-items:center;flex:none;color:transparent;padding:0}
+.chk[aria-checked="true"]{background:var(--green);color:var(--on)}
+.chk.pop{animation:pop .35s}
+@keyframes pop{0%{transform:scale(.7)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+.topic .t{flex:1;min-width:140px;cursor:pointer;overflow-wrap:anywhere;display:flex;align-items:center;gap:8px}
+.topic.done .t-txt{color:var(--muted);text-decoration:line-through;text-decoration-thickness:2px}
+
+/* 3-Dot Topic Status Controls */
+.status-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--bd);display:inline-block;flex:none;background:var(--track)}
+.status-dot.s1{background:var(--red);box-shadow:0 0 0 2px rgba(255,90,95,.25)}
+.status-dot.s2{background:var(--yellow);box-shadow:0 0 0 2px rgba(255,217,61,.35)}
+.status-dot.s3{background:var(--green);box-shadow:0 0 0 2px rgba(34,181,115,.25)}
+
+.status-group{display:inline-flex;align-items:center;gap:4px;background:var(--card2);border:2px solid var(--bd);border-radius:99px;padding:2px 6px;flex:none}
+.dot-btn{width:22px;height:22px;border-radius:50%;border:2px solid var(--bd);padding:0;display:grid;place-items:center;font-size:10px;font-weight:900;opacity:.42;transition:transform .1s,opacity .1s}
+.dot-btn:hover{opacity:.85;transform:scale(1.08)}
+.dot-btn.on{opacity:1;transform:scale(1.12);box-shadow:0 0 0 2px var(--ink)}
+.dot-btn.r{background:var(--red);color:var(--on)}
+.dot-btn.y{background:var(--yellow);color:var(--on)}
+.dot-btn.g{background:var(--green);color:var(--on)}
+.status-lbl{font-size:11px;font-weight:800;padding:0 4px;color:var(--muted)}
+.status-lbl.s1{color:var(--red)}
+.status-lbl.s2{color:#b58900}
+[data-theme="dark"] .status-lbl.s2{color:var(--yellow)}
+.status-lbl.s3{color:var(--green)}
+
+.diffbtn{border:2px solid var(--bd);border-radius:99px;font-size:12px;font-weight:800;padding:1px 9px;background:transparent;color:var(--muted);border-style:dashed;flex:none}
+.diffbtn.d1{background:var(--lime);color:var(--on);border-style:solid}
+.diffbtn.d2{background:var(--orange);color:var(--on);border-style:solid}
+.diffbtn.d3{background:var(--red);color:var(--on);border-style:solid}
+.empty-u,.nomatch{padding:14px;color:var(--muted);border:2px dashed var(--bd);border-radius:12px;text-align:center;font-size:14px}
+.addrow{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.addrow .inp{flex:1;min-width:160px}
+.uacts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.stamp{position:absolute;top:-14px;right:70px;transform:rotate(-7deg);border:3px solid var(--stamp);color:var(--stamp);background:var(--card);border-radius:10px;padding:1px 12px;font:900 18px var(--display);z-index:2}
+.stamp.slam{animation:slam .5s cubic-bezier(.2,1.4,.4,1)}
+@keyframes slam{0%{transform:rotate(-20deg) scale(3);opacity:0}100%{transform:rotate(-7deg) scale(1);opacity:1}}
+.flash{animation:flash 1.2s}
+@keyframes flash{0%,60%{box-shadow:0 0 0 6px var(--yellow),5px 5px 0 var(--sh)}100%{box-shadow:5px 5px 0 var(--sh)}}
+
+/* focus */
+.focus{display:grid;gap:22px;justify-items:center;text-align:center}
+.modes{display:flex;gap:4px;padding:4px;border:2px solid var(--bd);border-radius:14px;background:var(--card2)}
+.modes button{border:0;background:transparent;border-radius:10px;padding:7px 14px;font-weight:800}
+.modes button.on{background:var(--yellow);color:var(--on);box-shadow:inset 0 0 0 2px var(--bd)}
+.tm-ring b{font-size:calc(var(--sz)*.21)!important}
+.durs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pickrow{display:grid;gap:10px;width:100%;max-width:440px;text-align:left}
+.lbl{display:block;font-weight:800;font-size:14px;margin:12px 0 6px}
+.lbl small{font-weight:600;color:var(--muted)}
+
+/* empty */
+.empty{text-align:center;padding:40px 20px;display:grid;gap:12px;justify-items:center}
+.empty .big-emoji{font-size:56px;transform:rotate(-6deg)}
+.empty h2{font-size:30px;margin:0}
+.empty p{max-width:46ch;margin:0 0 6px;color:var(--muted)}
+
+/* modal, toast */
+.overlay{position:fixed;inset:0;background:rgba(10,15,35,.6);display:grid;place-items:center;padding:16px;z-index:60;overflow:auto}
+.modal{background:var(--card);border:2px solid var(--bd);border-radius:var(--r-lg);box-shadow:6px 6px 0 var(--sh);max-width:500px;width:100%;max-height:92vh;overflow:auto;padding:22px}
+.modal h3{font-size:24px;margin-bottom:6px}
+.mactions{display:flex;gap:10px;margin-top:20px;align-items:center;flex-wrap:wrap}
+.picks{display:flex;gap:8px;flex-wrap:wrap}
+.pick{width:42px;height:42px;border-radius:12px;border:2px solid var(--bd);background:var(--card2);font-size:20px;display:grid;place-items:center;padding:0}
+.pick.sw{border-radius:50%}
+.pick.on{outline:3px solid var(--blue);outline-offset:2px}
+.seg-opts{display:flex;gap:8px;flex-wrap:wrap}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--muted);font-size:13px;font-weight:700}
+.auth-divider::before,.auth-divider::after{content:"";flex:1;border-top:2px dashed var(--bd)}
+#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;display:grid;gap:8px;z-index:80;width:max-content;max-width:calc(100vw - 24px)}
+.toast{background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:14px;font-weight:700;display:flex;gap:12px;align-items:center;box-shadow:3px 3px 0 var(--sh);animation:pop .3s}
+.toast button{border:0;background:var(--yellow);color:var(--on);border-radius:8px;padding:3px 10px;font-weight:800}
+.toast.out{opacity:0;transition:opacity .3s}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:70}
+.foot{text-align:center;color:var(--muted);font-size:13px;margin-top:10px}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .nav{display:none}
+  .top-in{gap:8px}
+  .top-r{margin-left:auto}
+  .bottom-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:30;background:var(--paper);border-top:2px solid var(--bd);padding:8px 12px calc(8px + env(safe-area-inset-bottom));gap:8px}
+  .bottom-nav .navbtn{flex:1;flex-direction:column;gap:0;padding:6px;font-size:12px;border-radius:12px}
+  .bottom-nav .navbtn span:first-child{font-size:20px}
+  main{padding-bottom:100px}
+  .hero{grid-template-columns:1fr;padding:20px}
+  .stamp{right:16px}
+  #toasts{bottom:92px}
+  .card{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+
+/* ====== UPGRADE: nav badge ====== */
+.navbtn{position:relative}
+.nbadge{min-width:19px;height:19px;padding:0 5px;border-radius:99px;background:var(--red);color:var(--on);border:2px solid var(--bd);font:900 11px/15px var(--body);text-align:center}
+.bottom-nav .nbadge{position:absolute;top:0;left:calc(50% + 6px)}
+.sec-h{font-size:22px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.linkbtn{border:0;background:none;color:var(--ink);text-decoration:underline;text-underline-offset:3px;font-weight:700;font-size:13px;padding:6px 0;text-align:center}
+
+/* ====== UPGRADE: welcome / sign-in gate ====== */
+body.gated{overflow:hidden}
+.gate{position:fixed;inset:0;z-index:75;display:flex;overflow:auto;padding:16px;background-color:var(--paper);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:28px 28px}
+.gate-card{margin:auto;width:100%;max-width:440px;background:var(--card);border:2px solid var(--bd);border-radius:var(--r-lg);box-shadow:6px 6px 0 var(--sh);overflow:hidden}
+.gate-in{padding:24px 24px 20px;display:grid;gap:14px}
+.gate-h{font-size:30px}
+.gate-tabs{width:100%}
+.gate-tabs button{flex:1}
+.gbtn{width:100%;display:flex;justify-content:center;align-items:center;gap:10px;padding:11px 15px}
+.g-ico{width:22px;height:22px;border-radius:50%;border:2px solid var(--bd);background:#fff;color:#3a86ff;font:900 13px/18px var(--body);text-align:center}
+.gbtn:disabled,.gsubmit:disabled{opacity:.6;cursor:progress}
+.gate .auth-divider{margin:0}
+#gate-form .lbl:first-child{margin-top:0}
+.pw{position:relative}
+.pw .inp{padding-right:70px}
+.pw-t{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:2px solid var(--bd);background:var(--card2);border-radius:8px;font-weight:800;font-size:12px;padding:3px 9px}
+.gsubmit{width:100%;margin-top:14px;padding:12px 15px;font-size:15px}
+#gate-msg{margin-top:12px}
+#gate-msg:empty{display:none}
+.gate-error,.gate-info{border:2px solid var(--bd);border-radius:12px;padding:8px 12px;font-size:14px;font-weight:700}
+.gate-error{background:var(--red);color:var(--on)}
+.gate-info{background:var(--lime);color:var(--on)}
+.gate-wait{display:grid;gap:10px;justify-items:center;text-align:center;padding:26px 0}
+.spin{width:34px;height:34px;border-radius:50%;border:4px solid var(--track);border-top-color:var(--blue);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.skipbar{display:block;width:100%;border:0;border-top:2px solid var(--bd);background:var(--yellow);color:var(--on);font-weight:800;font-size:13px;padding:9px 14px;text-align:center}
+.skipbar:hover{filter:brightness(.96)}
+.skipbar:focus-visible{outline-offset:-4px}
+
+/* ====== UPGRADE: custom timer + sounds ====== */
+.cdur{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+.stepb{width:40px;height:40px;border-radius:12px;border:2px solid var(--bd);background:var(--card);box-shadow:2px 2px 0 var(--sh);font:900 15px var(--display)}
+.stepb:active{transform:translate(2px,2px);box-shadow:none}
+.cd-field{display:flex;align-items:center;gap:6px;font-weight:800}
+.cd-field .inp{width:86px;text-align:center;font-weight:900;padding:9px 8px}
+#dur-wrap{display:grid;gap:12px;width:100%;justify-items:center}
+#dur-wrap.locked{opacity:.55;pointer-events:none}
+.snd-grid{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
+.snd{display:flex;gap:8px;align-items:center;border:2px solid var(--bd);border-radius:12px;background:var(--card);padding:8px 10px;font-weight:800;font-size:13px;text-align:left}
+.snd span{font-size:18px}
+.snd.on{background:var(--yellow);color:var(--on);box-shadow:inset 0 0 0 2px var(--bd)}
+.snd-ctl{display:grid;gap:12px;margin-top:16px}
+.snd-ctl label{display:flex;gap:10px;align-items:center;font-weight:800;font-size:14px}
+.snd-ctl input[type=range]{flex:1;min-width:0;accent-color:var(--blue)}
+.snd-ctl output{min-width:42px;text-align:right;color:var(--muted)}
+.snd-ctl select{width:auto}
+
+/* ====== UPGRADE: daily streak ====== */
+.streak{display:grid;gap:14px;align-content:start}
+.streak h2{margin:0}
+.sk-top{display:flex;gap:14px;align-items:center}
+.sk-flame{width:74px;height:74px;border-radius:22px;border:2px solid var(--bd);background:var(--orange);display:grid;place-items:center;font-size:38px;box-shadow:3px 3px 0 var(--sh);transform:rotate(-5deg);flex:none}
+.sk-flame.cold{background:var(--track);filter:grayscale(.7)}
+.sk-num{font:900 44px/1 var(--display);letter-spacing:-.03em}
+.sk-num small{font:700 16px var(--body);letter-spacing:0;color:var(--muted)}
+.sk-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.sk-h{text-align:center;font-size:11px;font-weight:800;color:var(--muted)}
+.sk-c{height:32px;border-radius:8px;border:2px solid var(--bd);background:var(--card2);display:grid;place-items:center;font-size:11px;font-weight:800;color:var(--muted)}
+.sk-c.on{background:var(--orange);color:var(--on)}
+.sk-c.future{opacity:.35;border-style:dashed}
+.sk-c.today{outline:3px solid var(--blue);outline-offset:1px}
+.sk-note{font-size:13px;color:var(--muted);margin:0}
+.sk-risk{background:var(--yellow);color:var(--on);border:2px dashed var(--bd);border-radius:12px;padding:8px 12px;font-size:14px;font-weight:700}
+
+/* ====== UPGRADE: Active Recall ====== */
+.hero.rhero{grid-template-columns:minmax(0,1fr)}
+.rhero h1{font-size:clamp(26px,4.5vw,36px)}
+.rc{display:grid;gap:16px}
+.rc-top{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.rc-em{width:46px;height:46px;border-radius:14px;border:2px solid var(--bd);background:var(--sc);display:grid;place-items:center;font-size:22px;flex:none}
+.rc-n{display:block;font:900 18px/1.2 var(--display)}
+.rc small{display:block;color:var(--muted)}
+.rc-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tl{display:grid;grid-template-columns:repeat(5,1fr);list-style:none;margin:0;padding:0}
+.tl-n{display:grid;justify-items:center;gap:3px;text-align:center;position:relative;font-size:12px}
+.tl-n::before{content:"";position:absolute;top:16px;left:-50%;width:100%;height:4px;background:var(--track)}
+.tl-n:first-child::before{display:none}
+.tl-n.done::before{background:var(--green)}
+.tl-dot{position:relative;z-index:1;width:36px;height:36px;border-radius:50%;border:2px solid var(--bd);background:var(--card2);display:grid;place-items:center;font-weight:900;font-size:12px}
+.tl-n.done .tl-dot{background:var(--green);color:var(--on)}
+.tl-n.today .tl-dot{background:var(--yellow);color:var(--on);box-shadow:0 0 0 4px rgba(255,217,61,.45)}
+.tl-n.overdue .tl-dot{background:var(--red);color:var(--on)}
+.tl-n.later .tl-dot{color:var(--muted);border-style:dashed}
+.tl-n small{font-size:11px;line-height:1.25}
+.tl-n .st{font-weight:800;color:var(--ink)}
+.btn.recall{background:var(--teal);color:var(--on)}
+.rs-list{display:grid;gap:8px;margin-top:14px;max-height:44vh;overflow:auto;padding:2px}
+.rs-row{display:flex;gap:10px;align-items:center;padding:10px 12px;border:2px solid var(--bd);border-radius:12px;background:var(--card2);text-align:left;width:100%;font-weight:700}
+.rs-box{width:26px;height:26px;border-radius:8px;border:2px solid var(--bd);background:var(--card);display:grid;place-items:center;flex:none;color:transparent}
+.rs-row[aria-pressed="true"]{background:var(--lime);color:var(--on)}
+.rs-row[aria-pressed="true"] .rs-box{background:var(--green);color:var(--on)}
+.rs-sum{margin-top:12px;font-weight:800}
+.rs-opt{display:flex;gap:8px;align-items:center;margin-top:10px;font-size:14px;font-weight:700}
+.rs-opt input{width:18px;height:18px;accent-color:var(--blue)}
+@media (max-width:760px){
+  .gate-in{padding:20px 18px 16px}
+  .gate-h{font-size:26px}
+  .rc-top .grow{flex:1 1 calc(100% - 64px)}
+  .sk-flame{width:62px;height:62px;font-size:32px}
+  .sk-num{font-size:38px}
+}
+</style>
+</head>
+<body>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div id="gate" class="gate" hidden></div>
+
+<header class="top">
+  <div class="top-in">
+    <div class="logo"><span class="logo-mark">📚</span><span>SyllabusPal</span></div>
+    <nav class="nav" aria-label="Main">
+      <button class="navbtn" data-action="nav" data-view="dashboard"><span>🏠</span><span>Home</span></button>
+      <button class="navbtn" data-action="nav" data-view="tracker"><span>✅</span><span>Tracker</span></button>
+      <button class="navbtn" data-action="nav" data-view="recall"><span>🧠</span><span>Recall</span><b class="nbadge" data-recall-badge hidden></b></button>
+      <button class="navbtn" data-action="nav" data-view="focus"><span>⏱️</span><span>Focus</span></button>
+    </nav>
+    <div class="top-r">
+      <button id="pill" class="pill" data-action="nav" data-view="focus" hidden>⏱️ <span id="pilltime"></span></button>
+      <span id="sync-badge" class="sync-pill" hidden>☁️ Saved</span>
+      <span id="user-badge" class="user-chip" hidden></span>
+      <button class="btn sm primary" id="signin-btn" data-action="open-auth">Sign In</button>
+      <button class="btn sm" id="signout-btn" data-action="sign-out" hidden>Sign Out</button>
+      <button class="icon-btn" id="themebtn" data-action="theme" aria-label="Switch light or dark mode">🌙</button>
+      <button class="icon-btn" data-action="settings" aria-label="Settings and backup">⚙️</button>
+    </div>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<nav class="bottom-nav" aria-label="Main">
+  <button class="navbtn" data-action="nav" data-view="dashboard"><span>🏠</span><span>Home</span></button>
+  <button class="navbtn" data-action="nav" data-view="tracker"><span>✅</span><span>Tracker</span></button>
+      <button class="navbtn" data-action="nav" data-view="recall"><span>🧠</span><span>Recall</span><b class="nbadge" data-recall-badge hidden></b></button>
+  <button class="navbtn" data-action="nav" data-view="focus"><span>⏱️</span><span>Focus</span></button>
+</nav>
+
+<div id="toasts" aria-live="polite"></div>
+<input type="file" id="imp" accept="application/json,.json" hidden>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- helpers ---------- */
+const $=(s,el=document)=>el.querySelector(s);
+const $$=(s,el=document)=>Array.from(el.querySelectorAll(s));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4);
+const pad=n=>String(n).padStart(2,'0');
+const dayKey=d=>{d=d instanceof Date?d:new Date(d);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
+const DAY=86400000;
+const APP_TITLE='SyllabusPal: track every topic, ace every exam';
+
+/* ---------- storage & cloud sync hooks ---------- */
+const KEY='syllabuspal.v1';
+let mem=null, persistent=true;
+function readStore(){
+  try{const r=window.localStorage.getItem(KEY);if(r)return JSON.parse(r);}catch(e){persistent=false;}
+  if(mem){try{return JSON.parse(mem);}catch(e){}}
+  return null;
+}
+function save(skipCloud){
+  state.updatedAt=Date.now();
+  const s=JSON.stringify(state);mem=s;
+  try{window.localStorage.setItem(KEY,s);}catch(e){persistent=false;}
+  if(!skipCloud&&typeof window.__syncToFirebase==='function'){
+    window.__syncToFirebase(state);
+  }
+}
+const defaults=()=>({v:1,name:'',theme:null,subjects:[],mins:{},sess:{},badges:{},active:null,pomo:{focus:25,short:5,long:15},recall:[],checkins:{},sound:{id:'bell',vol:70,repeat:2},updatedAt:0});
+let state=Object.assign(defaults(),readStore()||{});
+function normalizeState(st){
+  st=Object.assign(defaults(),st||{});
+  st.pomo=Object.assign({focus:25,short:5,long:15},st.pomo||{});
+  ['mins','sess','badges'].forEach(k=>{if(!st[k]||typeof st[k]!=='object')st[k]={};});
+  if(!Array.isArray(st.subjects))st.subjects=[];
+  st.subjects.forEach(s=>{
+    if(!Array.isArray(s.units))s.units=[];
+    s.units.forEach(u=>{
+      if(!Array.isArray(u.topics))u.topics=[];
+      u.topics.forEach(t=>{
+        if(typeof t.status!=='number'){
+          t.status=t.done?3:0;
+        }
+        t.done=(t.status===3);
+      });
+    });
+  });
+  ['focus','short','long'].forEach(k=>{const v=Math.round(+st.pomo[k]);st.pomo[k]=(v>=1&&v<=300)?v:({focus:25,short:5,long:15})[k];});
+  if(!st.checkins||typeof st.checkins!=='object'||Array.isArray(st.checkins))st.checkins={};
+  st.sound=Object.assign({id:'bell',vol:70,repeat:2},st.sound||{});
+  st.sound.vol=Math.min(100,Math.max(10,+st.sound.vol||70));
+  st.sound.repeat=Math.min(5,Math.max(1,parseInt(st.sound.repeat,10)||2));
+  if(typeof st.sound.id!=='string')st.sound.id='bell';
+  if(!Array.isArray(st.recall))st.recall=[];
+  st.recall=st.recall.filter(r=>r&&r.id&&/^\d{4}-\d{2}-\d{2}$/.test(r.start||'')&&st.subjects.some(s=>s.id===r.s&&s.units.some(u=>u.id===r.u)));
+  st.recall.forEach(r=>{if(!r.done||typeof r.done!=='object')r.done={};if(!r.round)r.round=1;});
+  return st;
+}
+state=normalizeState(state);
+
+const ui={view:'dashboard',filter:'all',q:'',prev:{},modal:null,focusSel:null,pop:null,popUnit:null};
+
+/* ---------- data model ---------- */
+const EMOJIS=['📚','💻','⚡','🧪','📐','🧠','🔬','🎨','📊','🌍','⚙️','📖','🧮','🔭','💡','🚀'];
+const COLORS=['#3a86ff','#8b6cff','#ff6fb5','#ff9f1c','#2ec4b6','#ff5a5f','#22b573','#ffd93d'];
+const STATUS_META={
+  0:{label:'Set status',short:'',dot:'s0'},
+  1:{label:'1 · Need to learn again',short:'Learn again',dot:'s1'},
+  2:{label:'2 · Revise it',short:'Revise it',dot:'s2'},
+  3:{label:'3 · Completed',short:'Completed',dot:'s3'}
+};
+
+function mkTopic(t){
+  if(typeof t==='string')t={text:t};
+  const status=typeof t.status==='number'?t.status:(t.done?3:0);
+  return{id:uid(),text:t.text,done:status===3,doneAt:status===3?Date.now():null,star:!!t.star,diff:t.diff||0,status};
+}
+function makeSubject(o){
+  const units=(o.units&&o.units.length?o.units:Array.from({length:5},(_,i)=>({name:'Unit '+(i+1),topics:[]})));
+  return{id:uid(),name:o.name,emoji:o.emoji,color:o.color,exam:o.exam||'',
+    units:units.map(u=>({id:uid(),name:u.name,collapsed:false,topics:(u.topics||[]).map(mkTopic)}))};
+}
+const getSubject=id=>state.subjects.find(s=>s.id===id);
+const activeSubject=()=>getSubject(state.active)||state.subjects[0];
+
+function toPct(raw){if(raw>=1)return 100;let p=Math.round(raw*100);if(p>=100)p=99;if(raw>0&&p===0)p=1;return p;}
+function uStats(u){
+  const total=u.topics.length;
+  const done=u.topics.filter(t=>t.done||t.status===3).length;
+  const learnAgain=u.topics.filter(t=>t.status===1).length;
+  const revise=u.topics.filter(t=>t.status===2).length;
+  return{total,done,left:total-done,learnAgain,revise,raw:total?done/total:0,pct:total?toPct(done/total):0};
+}
+function sStats(s){
+  const us=s.units.map(uStats);
+  const total=us.reduce((a,x)=>a+x.total,0),done=us.reduce((a,x)=>a+x.done,0);
+  const learnAgain=us.reduce((a,x)=>a+x.learnAgain,0),revise=us.reduce((a,x)=>a+x.revise,0);
+  const raw=us.length?us.reduce((a,x)=>a+x.raw,0)/us.length:0;
+  return{us,total,done,left:total-done,learnAgain,revise,raw,pct:toPct(raw),unitsDone:us.filter(x=>x.total>0&&x.done===x.total).length,empty:us.filter(x=>x.total===0).length};
+}
+function overall(){
+  const ss=state.subjects.map(sStats);
+  const raw=ss.length?ss.reduce((a,x)=>a+x.raw,0)/ss.length:0;
+  return{pct:toPct(raw),total:ss.reduce((a,x)=>a+x.total,0),done:ss.reduce((a,x)=>a+x.done,0),
+    learnAgain:ss.reduce((a,x)=>a+x.learnAgain,0),revise:ss.reduce((a,x)=>a+x.revise,0),
+    units:ss.reduce((a,x)=>a+x.us.length,0),unitsDone:ss.reduce((a,x)=>a+x.unitsDone,0)};
+}
+function tone(p){return p>=100?'#22b573':p>=75?'#8ad94b':p>=50?'#ffd93d':p>=25?'#ff9f1c':'#ff5a5f';}
+function daysTo(ds){const t=new Date(ds+'T00:00:00');const n=new Date();n.setHours(0,0,0,0);return Math.round((t-n)/DAY);}
+function activeDays(){
+  const set=new Set(Object.keys(state.mins).filter(k=>state.mins[k]>0));
+  state.subjects.forEach(s=>s.units.forEach(u=>u.topics.forEach(t=>{if(t.done&&t.doneAt)set.add(dayKey(t.doneAt));})));
+  Object.keys(state.checkins||{}).forEach(k=>set.add(k));
+  (state.recall||[]).forEach(r=>Object.values(r.done||{}).concat(r.past||[]).forEach(ts=>set.add(dayKey(ts))));
+  return set;
+}
+function streak(){
+  const set=activeDays();const d=new Date();
+  if(!set.has(dayKey(d)))d.setDate(d.getDate()-1);
+  let n=0;while(set.has(dayKey(d))){n++;d.setDate(d.getDate()-1);}
+  return n;
+}
+function topicsByDay(){
+  const m={};
+  state.subjects.forEach(s=>s.units.forEach(u=>u.topics.forEach(t=>{if(t.done&&t.doneAt){const k=dayKey(t.doneAt);m[k]=(m[k]||0)+1;}})));
+  return m;
+}
+function lastDays(n){
+  const out=[];
+  for(let i=n-1;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);out.push({key:dayKey(d),label:d.toLocaleDateString(undefined,{weekday:'short'}),isToday:i===0});}
+  return out;
+}
+function findTopic(id){
+  for(const s of state.subjects)for(const u of s.units){const t=u.topics.find(x=>x.id===id);if(t)return{s,u,t};}
+  return null;
+}
+
+/* ---------- small UI builders ---------- */
+const CHECK='<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+function bar(key,pct,cls){
+  const prev=ui.prev[key]!=null?ui.prev[key]:0;
+  return `<div class="bar ${cls||''}" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><div class="fill" data-k="${key}" data-w="${pct}" style="width:${prev}%;background-color:${tone(pct)}"></div></div>`;
+}
+function ring(key,pct,size,sw,label,color){
+  const r=(size-sw)/2,C=2*Math.PI*r,h=size/2;
+  const prev=ui.prev['r'+key]!=null?ui.prev['r'+key]:0;
+  return `<div class="ring" style="width:${size}px;height:${size}px;--sz:${size}px"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--track)" stroke-width="${sw}"/><circle class="rfill" data-k="r${key}" data-w="${pct}" data-c="${C}" cx="${h}" cy="${h}" r="${r}" fill="none" stroke="${color||tone(pct)}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-prev/100)}" transform="rotate(-90 ${h} ${h})"/></svg><div class="ring-txt"><b>${pct}%</b>${label?`<small>${label}</small>`:''}</div></div>`;
+}
+function animate(){
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    $$('.fill[data-w]').forEach(el=>{const w=+el.dataset.w;el.style.width=w+'%';ui.prev[el.dataset.k]=w;});
+    $$('.rfill[data-w]').forEach(el=>{const w=+el.dataset.w,C=+el.dataset.c;el.style.strokeDashoffset=C*(1-w/100);ui.prev[el.dataset.k]=w;});
+  }));
+}
+function examChip(s){
+  if(!s.exam)return '';
+  const d=daysTo(s.exam);
+  if(d<0)return '<span class="chip">Exam date passed</span>';
+  const cls=d<=7?'red':d<=21?'orange':'green';
+  return `<span class="chip ${cls}">📅 ${d===0?'Exam is today':d+' day'+(d>1?'s':'')+' to exam'}</span>`;
+}
+function pace(s){
+  const st=sStats(s);
+  if(st.total===0)return 'Add topics to get a daily target';
+  if(st.left===0)return 'All topics covered. Hit Revise All for exams!';
+  if(!s.exam)return 'Set an exam date to get a daily target';
+  const d=daysTo(s.exam);
+  if(d<0)return 'Exam date has passed';
+  const need=Math.ceil(st.left/Math.max(d,1));
+  return `About ${need} topic${need!==1?'s':''} a day to finish in time`;
+}
+
+/* ---------- badges ---------- */
+const BADGES=[
+  {id:'first',ico:'🌱',name:'First step',desc:'Complete your first topic',c:'#8ad94b',test:c=>c.done>=1},
+  {id:'ten',ico:'🚀',name:'On a roll',desc:'Complete 10 topics',c:'#ff9f1c',test:c=>c.done>=10},
+  {id:'fifty',ico:'⭐',name:'Unstoppable',desc:'Complete 50 topics',c:'#ffd93d',test:c=>c.done>=50},
+  {id:'hundred',ico:'💯',name:'Century',desc:'Complete 100 topics',c:'#ff6fb5',test:c=>c.done>=100},
+  {id:'unit',ico:'🏆',name:'Unit crusher',desc:'Finish every topic in a unit',c:'#2ec4b6',test:c=>c.unitsDone>=1},
+  {id:'subject',ico:'👑',name:'Subject slayer',desc:'Finish a whole subject',c:'#8b6cff',test:c=>c.subjectsDone>=1},
+  {id:'half',ico:'🎯',name:'Halfway hero',desc:'Reach 50% overall coverage',c:'#3a86ff',test:c=>c.overall>=50},
+  {id:'streak3',ico:'🔥',name:'Three in a row',desc:'Study 3 days in a row',c:'#ff9f1c',test:c=>c.streak>=3},
+  {id:'streak7',ico:'⚡',name:'Week warrior',desc:'Study 7 days in a row',c:'#ff5a5f',test:c=>c.streak>=7},
+  {id:'focus',ico:'🎧',name:'Deep focus',desc:'Log 100 focus minutes',c:'#2ec4b6',test:c=>c.mins>=100},
+  {id:'streak14',ico:'🌟',name:'Fortnight fighter',desc:'Study 14 days in a row',c:'#ff6fb5',test:c=>c.streak>=14},
+  {id:'streak30',ico:'🏅',name:'Month master',desc:'Study 30 days in a row',c:'#8b6cff',test:c=>c.streak>=30},
+  {id:'recall1',ico:'🧠',name:'Memory builder',desc:'Finish your first recall day',c:'#ffd93d',test:c=>c.recalls>=1},
+  {id:'recall30',ico:'🎓',name:'Locked in',desc:'Finish all 5 recall days for a unit',c:'#22b573',test:c=>c.mastered>=1}
+];
+function badgeCtx(){
+  const ss=state.subjects.map(sStats);
+  return{done:ss.reduce((a,x)=>a+x.done,0),unitsDone:ss.reduce((a,x)=>a+x.unitsDone,0),
+    subjectsDone:ss.filter(x=>x.pct===100).length,overall:overall().pct,streak:streak(),
+    mins:Object.values(state.mins).reduce((a,b)=>a+b,0),recalls:recallStats().checks,mastered:recallStats().mastered};
+}
+function checkBadges(silent){
+  const c=badgeCtx();let changed=false;
+  BADGES.forEach(b=>{
+    if(!state.badges[b.id]&&b.test(c)){state.badges[b.id]=Date.now();changed=true;if(!silent)toast(`${b.ico} Badge unlocked: ${b.name}`);}
+  });
+  if(changed){save();if(ui.view==='dashboard')render();}
+}
+
+/* ---------- views ---------- */
+const QUOTES=["Small progress is still progress.","You don't need to be perfect, just consistent.","One topic today beats ten topics someday.","Future you will be glad you started.","Study in sprints, rest in full.","Every tick is a tiny victory.","Start before you feel ready.","Revision is just meeting a topic for the second time.","Discipline is picking what you want most over what you want now.","The syllabus is big, but it only gets smaller."];
+
+function emptyState(){
+  return `<div class="card empty"><div class="big-emoji">🎒</div><h2>Let's set up your semester</h2>
+  <p>Add a subject, split it into units, list the topics, then tick them off as you study. Your progress bars fill up as you go.</p>
+  <div class="row" style="justify-content:center"><button class="btn primary" data-action="new-subject">Add my first subject</button><button class="btn" data-action="sample">Try with sample subjects</button></div></div>`;
+}
+
+function vDash(){
+  const subs=state.subjects;
+  if(!subs.length)return emptyState();
+  const o=overall(),sk=streak(),tk=dayKey(new Date());
+  const byDay=topicsByDay(),todayDone=byDay[tk]||0;
+  const days=lastDays(7);
+  const hr=new Date().getHours();
+  const greet=hr<5?'Burning the midnight oil':hr<12?'Good morning':hr<17?'Good afternoon':hr<22?'Good evening':'Late night grind';
+  const nm=state.name?', '+esc(state.name):'';
+  let lead;
+  if(o.total===0)lead='Add topics to your units and this page comes alive.';
+  else if(o.pct===0)lead='Fresh start. Tick off your first topic today.';
+  else if(o.pct<25)lead='Good start. Small steps add up fast.';
+  else if(o.pct<50)lead='Momentum is building. Keep the streak alive.';
+  else if(o.pct<75)lead='Past halfway. The finish line is in sight.';
+  else if(o.pct<100)lead='Almost there. One last push.';
+  else lead='Syllabus conquered. Hit Revise All to prep for exams!';
+  const stat=(ico,c,val,label)=>`<div class="stat"><div class="ico" style="background:${c}">${ico}</div><div><b>${val}</b><span>${label}</span></div></div>`;
+
+  const subjCards=subs.map(s=>{
+    const st=sStats(s);
+    return `<div class="subj-card" role="button" tabindex="0" style="--sc:${s.color}" data-action="open-subject" data-s="${s.id}">
+      <div class="sc-top"><span class="em">${s.emoji}</span><div class="grow"><b>${esc(s.name)}</b><small>${st.done} of ${st.total} green · ${st.revise} revise · ${st.learnAgain} relearn</small></div><span class="pctb" style="background:${tone(st.pct)}">${st.pct}%</span></div>
+      ${bar('dc-'+s.id,st.pct)}
+      <div class="minisegs" style="--n:${s.units.length}">${st.us.map((x,i)=>`<i title="Unit ${i+1}: ${x.pct}%" style="${x.total?'background:'+tone(x.pct):''}"></i>`).join('')}</div>
+      <div class="row">${examChip(s)||'<span class="chip">No exam date set</span>'}${st.revise?`<span class="chip yellow">🟡 ${st.revise} to revise</span>`:''}${st.learnAgain?`<span class="chip red">🔴 ${st.learnAgain} learn again</span>`:''}</div>
+    </div>`;
+  }).join('');
+
+  const wkVals=days.map(d=>({label:d.label,v:byDay[d.key]||0,today:d.isToday}));
+  const wkMax=Math.max(3,...wkVals.map(x=>x.v));
+  const wk=`<div class="wk">${wkVals.map(x=>`<div class="wk-c ${x.today?'today':''}"><span class="wk-v">${x.v||''}</span><div class="wk-bar"><i class="${x.v?'':'z'}" style="height:${x.v/wkMax*100}%"></i></div><small>${x.label}</small></div>`).join('')}</div>`;
+
+  const allU=subs.flatMap(s=>s.units.map(u=>uStats(u)));
+  const nDone=allU.filter(x=>x.total>0&&x.done===x.total).length;
+  const nProg=allU.filter(x=>x.done>0&&x.done<x.total).length;
+  const nNone=allU.length-nDone-nProg;
+  const a=nDone/allU.length*100,b=a+nProg/allU.length*100;
+  const donut=`<div class="donut-wrap"><div class="donut" style="background:conic-gradient(#22b573 0 ${a}%,#ffd93d ${a}% ${b}%,var(--track) ${b}% 100%)"><div class="hole"><div><b>${nDone}</b><br><small>of ${allU.length} units done</small></div></div></div>
+    <div class="legend"><div><i style="background:#22b573"></i>${nDone} finished</div><div><i style="background:#ffd93d"></i>${nProg} in progress</div><div><i style="background:var(--track)"></i>${nNone} not started</div></div></div>`;
+
+  const maxU=Math.max(...subs.map(s=>s.units.length));
+  const heat=`<div class="heat" style="--n:${maxU}"><span></span>${Array.from({length:maxU},(_,i)=>`<span class="hh">Unit ${i+1}</span>`).join('')}
+    ${subs.map(s=>{const st=sStats(s);return `<span class="hl">${s.emoji} ${esc(s.name)}</span>`+Array.from({length:maxU},(_,i)=>{
+      const u=s.units[i];if(!u)return '<span></span>';const x=st.us[i];
+      return x.total?`<div class="hc" role="button" tabindex="0" data-action="goto" data-s="${s.id}" data-u="${u.id}" title="${esc(u.name)}: ${x.done} of ${x.total}" style="background:${tone(x.pct)}">${x.pct}%</div>`
+                    :`<div class="hc none" role="button" tabindex="0" data-action="goto" data-s="${s.id}" data-u="${u.id}" title="${esc(u.name)}: no topics yet">–</div>`;}).join('');}).join('')}</div>
+    <div class="keybar">Colour key:<i style="background:#ff5a5f"></i>under 25%<i style="background:#ff9f1c"></i>25 to 49%<i style="background:#ffd93d"></i>50 to 74%<i style="background:#8ad94b"></i>75 to 99%<i style="background:#22b573"></i>done</div>`;
+
+  const attn=[];
+  subs.forEach(s=>s.units.forEach((u,i)=>{const x=uStats(u);if(x.pct<100)attn.push({s,u,i,x});}));
+  attn.sort((p,q)=>((p.x.total===0)-(q.x.total===0))||(p.x.pct-q.x.pct));
+  const attnHtml=attn.length?attn.slice(0,4).map(e=>`<div class="li" role="button" tabindex="0" data-action="goto" data-s="${e.s.id}" data-u="${e.u.id}" style="cursor:pointer"><span class="em">${e.s.emoji}</span><div class="grow"><b>${esc(e.u.name)}</b><small>${esc(e.s.name)}, ${e.x.total?e.x.done+' of '+e.x.total+' topics done':'no topics added yet'}</small></div><span class="pctb" style="background:${e.x.total?tone(e.x.pct):'var(--card)'}">${e.x.pct}%</span></div>`).join(''):'<div class="li"><span class="em">🎉</span><div><b>Everything is covered</b><small>Use Revise All to start your exam revision pass.</small></div></div>';
+
+  const exams=subs.filter(s=>s.exam).map(s=>({s,d:daysTo(s.exam)})).sort((p,q)=>p.d-q.d);
+  const examHtml=exams.length?exams.map(e=>`<div class="li"><span class="em">${e.s.emoji}</span><div class="grow"><b>${esc(e.s.name)}</b><small>${e.d<0?'Exam date has passed':pace(e.s)}</small></div>${examChip(e.s)}</div>`).join(''):'<div class="li"><span class="em">📅</span><div><b>No exam dates yet</b><small>Edit a subject and add its exam date to see a daily target.</small></div></div>';
+
+  const earned=BADGES.filter(b=>state.badges[b.id]).length;
+  const badges=BADGES.map(b=>state.badges[b.id]?`<div class="badge" style="--bg-c:${b.c}"><div class="b-ico">${b.ico}</div><b>${b.name}</b><small>${b.desc}</small></div>`:`<div class="badge locked"><div class="b-ico">${b.ico}</div><b>${b.name}</b><small>${b.desc}</small></div>`).join('');
+
+  const q=QUOTES[Math.floor(Date.now()/DAY)%QUOTES.length];
+
+  return `<div class="stack">
+  <section class="hero">
+    <div>
+      <h1>${greet}${nm} 👋</h1>
+      <p class="lead">${lead}</p>
+      <div class="tally"><span>📅 ${new Date().toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})}</span><span>✅ ${todayDone} done today</span><span>🟡 ${o.revise} to revise</span><span>🔴 ${o.learnAgain} learn again</span><span>🔥 ${sk}-day streak</span></div>
+      <div class="row"><button class="btn dark" data-action="nav" data-view="tracker">Continue studying</button><button class="btn" data-action="nav" data-view="focus">Start a focus timer</button></div>
+    </div>
+    <div class="meter">
+      <div class="big">${o.pct}<small>%</small></div>
+      <div>of the semester syllabus covered</div>
+      ${bar('hero',o.pct,'tall')}
+      <div class="note">${100-o.pct}% still to go</div>
+    </div>
+  </section>
+
+  <section class="cols">${streakCard()}${recallDueCard()}</section>
+
+  <section class="stats">
+    ${stat('📚','#3a86ff',subs.length,'subjects')}
+    ${stat('✅','#22b573',o.done,'completed (3)')}
+    ${stat('🟡','#ffd93d',o.revise,'revise it (2)')}
+    ${stat('🔴','#ff5a5f',o.learnAgain,'learn again (1)')}
+    ${stat('🏁','#ff6fb5',o.unitsDone+'/'+o.units,'units done')}
+    ${stat('⏱️','#2ec4b6',Object.values(state.mins).reduce((a,b)=>a+b,0),'focus min')}
+  </section>
+
+  <section><div class="row" style="justify-content:space-between;margin-bottom:12px"><h2 style="font-size:24px">Your subjects</h2><button class="btn sm" data-action="new-subject">Add subject</button></div><div class="subj-grid">${subjCards}</div></section>
+
+  <section class="cols">
+    <div class="card"><h2>Topics finished this week</h2>${wk}</div>
+    <div class="card"><h2>Unit status</h2><p class="sub">Every unit across every subject.</p>${donut}</div>
+  </section>
+
+  <section class="card"><h2>Unit heatmap</h2><p class="sub">Tap any block to jump to that unit.</p>${heat}</section>
+
+  <section class="cols">
+    <div class="card"><h2>Needs your attention</h2><div class="list">${attnHtml}</div></div>
+    <div class="card"><h2>Exam countdown</h2><div class="list">${examHtml}</div></div>
+  </section>
+
+  <section class="card"><h2>Sticker book <span class="muted" style="font:600 15px var(--body)">${earned} of ${BADGES.length} collected</span></h2><div class="badges">${badges}</div></section>
+
+  <div class="quote">“${esc(q)}”</div>
+  </div>`;
+}
+
+function topicRow(t,u){
+  const st=t.status||0;
+  const meta=STATUS_META[st]||STATUS_META[0];
+  return `<div class="topic ${t.done?'done':''}" data-t="${t.id}" data-u="${u.id}" data-text="${esc(t.text.toLowerCase())}" data-star="${t.star?1:0}" data-done="${t.done?1:0}" data-status="${st}">
+    <button class="chk ${ui.pop===t.id?'pop':''}" role="checkbox" aria-checked="${t.done}" aria-label="Mark complete: ${esc(t.text)}" data-action="toggle-topic">${CHECK}</button>
+    <span class="t" data-action="toggle-topic">
+      <span class="status-dot ${meta.dot}" title="${meta.label}"></span>
+      <span class="t-txt">${esc(t.text)}</span>
+    </span>
+    <div class="status-group" role="group" aria-label="Topic study status">
+      <button type="button" class="dot-btn r ${st===1?'on':''}" data-action="set-status" data-status="1" title="1: Need to learn again (Red)">1</button>
+      <button type="button" class="dot-btn y ${st===2?'on':''}" data-action="set-status" data-status="2" title="2: Revise it (Yellow)">2</button>
+      <button type="button" class="dot-btn g ${st===3?'on':''}" data-action="set-status" data-status="3" title="3: Completed (Green)">3</button>
+      ${st>0?`<span class="status-lbl s${st}">${meta.short}</span>`:''}
+    </div>
+    <button class="diffbtn d${t.diff}" data-action="cycle-diff" title="Tap to set difficulty">${['level','Easy','Medium','Hard'][t.diff]}</button>
+    <button class="icon ${t.star?'on':''}" data-action="star" title="Mark as important" aria-label="Mark as important">${t.star?'★':'☆'}</button>
+    <button class="icon" data-action="edit-topic" title="Edit" aria-label="Edit topic">✏️</button>
+    <button class="icon" data-action="del-topic" title="Delete" aria-label="Delete topic">🗑️</button>
+  </div>`;
+}
+
+function unitCard(s,u,i){
+  const x=uStats(u),open=!u.collapsed,c=tone(x.pct);
+  const rc=activeRecallFor(u.id),rn=rc?recallInfo(rc).next:null;
+  const recallBtn=rc?`<button type="button" class="btn sm" data-action="nav" data-view="recall" title="Open Active Recall">🧠 In Active Recall, next Day ${rn.n}</button>`
+    :`<button type="button" class="btn sm recall" data-action="recall-add" title="Recall this whole unit on day 1, 3, 7, 14 and 30">🧠 Add to Active Recall</button>`;
+  const recallTag=(rn&&(rn.state==='today'||rn.state==='overdue'))?' · 🧠 recall due':'';
+  const sub=x.total?`${x.done} of ${x.total} completed · ${x.revise} revise · ${x.learnAgain} learn again`:'No topics yet';
+  const body=open?`<div class="unit-b">
+    <div class="topics">${u.topics.length?u.topics.map(t=>topicRow(t,u)).join(''):'<div class="empty-u">Nothing here yet. Type your first topic below, or paste a whole list with Bulk add.</div>'}
+    <div class="nomatch" hidden>No topics match this filter.</div></div>
+    <div class="addrow"><input class="inp addinp" maxlength="140" placeholder="Add a topic and press Enter" aria-label="New topic"><button class="btn primary" data-action="add-topic">Add</button><button class="btn" data-action="bulk">Bulk add</button></div>
+    <div class="uacts">
+      <button class="btn sm" data-action="mark-all">✅ Mark all completed</button>
+      <button class="btn sm revise" data-action="revise-unit">🔄 Revise all in unit</button>
+      <button class="btn sm" data-action="relearn-unit">🔴 Need to learn all</button>
+      ${recallBtn}
+      <button class="btn sm" data-action="reset-unit">Clear ticks</button>
+      <button class="btn sm danger" data-action="del-unit">Remove unit</button>
+    </div>
+  </div>`:'';
+  return `<section class="card unit" id="u-${u.id}" data-u="${u.id}">
+    ${x.pct===100?`<div class="stamp ${ui.popUnit===u.id?'slam':''}">Covered 🎉</div>`:''}
+    <div class="unit-h" role="button" tabindex="0" aria-expanded="${open}" data-action="toggle-unit">
+      <div class="ubadge" style="background:${c}">${i+1}</div>
+      <div class="grow"><div class="uname">${esc(u.name)}</div><div class="usub">${sub}${recallTag}</div></div>
+      <button class="icon" data-action="rename-unit" title="Rename unit" aria-label="Rename unit">✏️</button>
+      <span class="pctb" style="background:${c}">${x.pct}%</span>
+      <span class="chev ${open?'open':''}" aria-hidden="true">▾</span>
+    </div>
+    ${bar('ub-'+u.id,x.pct)}
+    ${body}
+  </section>`;
+}
+
+function vTracker(){
+  const subs=state.subjects;
+  if(!subs.length)return emptyState();
+  const s=activeSubject();state.active=s.id;
+  const st=sStats(s);
+  const chips=subs.map(x=>`<button class="schip ${x.id===s.id?'on':''}" style="--sc:${x.color}" data-action="pick-subject" data-s="${x.id}"><span>${x.emoji}</span>${esc(x.name)}</button>`).join('')+`<button class="schip add" data-action="new-subject">+ New subject</button>`;
+  const filters=[
+    ['all','All'],
+    ['s1','🔴 1: Learn again'],
+    ['s2','🟡 2: Revise it'],
+    ['s3','✅ 3: Completed'],
+    ['pending','Pending'],
+    ['star','⭐ Important']
+  ].map(f=>`<button class="fchip ${ui.filter===f[0]?'on':''}" data-action="filter" data-f="${f[0]}">${f[1]}</button>`).join('');
+  const segs=`<div class="segs" style="--n:${s.units.length}">${st.us.map((x,i)=>`<button class="seg" data-action="jump" data-u="${s.units[i].id}" title="${esc(s.units[i].name)}"><span class="seg-l">Unit ${i+1}</span>${bar('sg-'+s.units[i].id,x.pct,'thin')}<span class="seg-p">${x.pct}%</span></button>`).join('')}</div>`;
+  return `<div class="stack">
+  <div class="chips-row">${chips}</div>
+  <section class="card subj-head" style="--sc:${s.color}">
+    <div class="sh-top">
+      <div class="emoji-badge">${s.emoji}</div>
+      <div class="grow"><h2>${esc(s.name)}</h2><div class="row">${examChip(s)}<span class="chip">${esc(pace(s))}</span></div></div>
+      <div class="row">
+        <button class="btn sm revise" data-action="revise-all-subject" title="Set all topics in this subject to Yellow (Revise it) for exam preparation">📝 Revise all (Exam Mode)</button>
+        <button class="btn sm" data-action="edit-subject">Edit subject</button>
+      </div>
+    </div>
+    <div class="sh-body">
+      ${ring('sh'+s.id,st.pct,148,15,'covered')}
+      <div class="sh-stats">
+        <div class="big"><b>${st.pct}%</b> of the syllabus covered</div>
+        ${bar('sb-'+s.id,st.pct,'tall')}
+        <div class="left-note">${100-st.pct}% still left to cover</div>
+        <div class="mini-stats">
+          <span class="chip green">✅ 3: ${st.done} completed</span>
+          <span class="chip yellow">🟡 2: ${st.revise} revise it</span>
+          <span class="chip red">🔴 1: ${st.learnAgain} learn again</span>
+          <span class="chip">🏁 ${st.unitsDone} of ${s.units.length} units finished</span>
+        </div>
+      </div>
+    </div>
+    ${segs}
+    ${st.empty?`<div class="warn">${st.empty} unit${st.empty>1?'s have':' has'} no topics yet. Add the topics from your syllabus so the percentage is accurate. Each unit counts equally.</div>`:''}
+  </section>
+  <div class="toolbar"><input id="q" class="inp" placeholder="🔍 Search topics" value="${esc(ui.q)}" aria-label="Search topics">${filters}<button class="btn sm" data-action="expand-all">Expand all</button><button class="btn sm" data-action="collapse-all">Collapse all</button></div>
+  ${s.units.map((u,i)=>unitCard(s,u,i)).join('')}
+  <div><button class="btn" data-action="add-unit">+ Add another unit</button></div>
+  </div>`;
+}
+
+/* focus timer */
+const timer={mode:'focus',total:state.pomo.focus*60,left:state.pomo.focus*60,running:false,endAt:0,iv:null,subj:'',topic:''};
+const fmt=s=>pad(Math.floor(s/60))+':'+pad(s%60);
+function modeMins(m){return state.pomo[m];}
+function vFocus(){
+  const tk=dayKey(new Date()),days=lastDays(7);
+  const vals=days.map(d=>({label:d.label,v:state.mins[d.key]||0,today:d.isToday}));
+  const mx=Math.max(30,...vals.map(x=>x.v));
+  const totalMins=Object.values(state.mins).reduce((a,b)=>a+b,0);
+  const s=getSubject(timer.subj);
+  const pend=s?s.units.flatMap(u=>u.topics.filter(t=>!t.done).map(t=>({id:t.id,text:t.text,unit:u.name}))):[];
+  const durs=timer.mode==='focus'?[15,25,45,60,90]:timer.mode==='short'?[5,10,15]:[15,20,30];
+  const size=250,sw=16,r=(size-sw)/2,C=2*Math.PI*r,h=size/2;
+  const frac=timer.total?(timer.total-timer.left)/timer.total:0;
+  const col=timer.mode==='focus'?'#3a86ff':'#22b573';
+  return `<div class="stack"><div class="cols">
+   <section class="card focus">
+     <div class="modes">${[['focus','Focus'],['short','Short break'],['long','Long break']].map(m=>`<button class="${timer.mode===m[0]?'on':''}" data-action="t-mode" data-m="${m[0]}">${m[1]}</button>`).join('')}</div>
+     <div class="ring tm-ring" style="width:${size}px;height:${size}px;max-width:100%;--sz:${size}px">
+       <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${h}" cy="${h}" r="${r}" fill="none" stroke="var(--track)" stroke-width="${sw}"/><circle id="trf" data-c="${C}" cx="${h}" cy="${h}" r="${r}" fill="none" stroke="${col}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-frac)}" transform="rotate(-90 ${h} ${h})" style="transition:stroke-dashoffset .3s linear"/></svg>
+       <div class="ring-txt"><b id="tm">${fmt(timer.left)}</b><small>${timer.mode==='focus'?'stay with one topic':'rest your eyes'}</small></div>
+     </div>
+     <div class="row" style="justify-content:center"><button class="btn primary" id="tplay" data-action="t-toggle">Start</button><button class="btn" data-action="t-reset">Reset</button></div>
+     <div id="dur-wrap">
+       <div class="durs">${durs.map(m=>`<button class="fchip ${modeMins(timer.mode)===m?'on':''}" data-action="t-dur" data-m="${m}">${m} min</button>`).join('')}</div>
+       <div class="cdur"><button type="button" class="stepb" data-action="t-step" data-d="-5" aria-label="5 minutes less">−5</button><label class="cd-field"><input id="t-custom" class="inp" type="number" min="1" max="300" inputmode="numeric" value="${modeMins(timer.mode)}" aria-label="Custom length in minutes"> min</label><button type="button" class="stepb" data-action="t-step" data-d="5" aria-label="5 minutes more">+5</button><button type="button" class="btn sm primary" data-action="t-custom">Set time</button></div>
+       <small class="muted">Choose any length from 1 to 300 minutes.</small>
+     </div>
+     ${timer.mode==='focus'?`<div class="pickrow">
+        <div><label class="lbl" for="f-subj">What are you studying? <small>(optional)</small></label>
+        <select id="f-subj" class="inp"><option value="">Any subject</option>${state.subjects.map(x=>`<option value="${x.id}" ${x.id===timer.subj?'selected':''}>${x.emoji} ${esc(x.name)}</option>`).join('')}</select></div>
+        ${s?`<div><label class="lbl" for="f-topic">Topic to finish this session</label>
+        <select id="f-topic" class="inp"><option value="">No specific topic</option>${pend.map(t=>`<option value="${t.id}" ${t.id===timer.topic?'selected':''}>${esc(t.text)} (${esc(t.unit)})</option>`).join('')}</select></div>`:''}
+     </div>`:''}
+   </section>
+   <div class="stack">${soundCard()}<section class="card">
+     <h2>Focus minutes this week</h2>
+     <div class="wk">${vals.map(x=>`<div class="wk-c ${x.today?'today':''}"><span class="wk-v">${x.v||''}</span><div class="wk-bar"><i class="${x.v?'':'z'}" style="height:${x.v/mx*100}%"></i></div><small>${x.label}</small></div>`).join('')}</div>
+     <div class="mini-stats" style="margin-top:16px"><span class="chip">🍅 ${state.sess[tk]||0} sessions today</span><span class="chip">⚡ ${state.mins[tk]||0} min today</span><span class="chip">⏱️ ${totalMins} min in total</span></div>
+     <p class="muted" style="margin:14px 0 0;font-size:14px">Tip: 25 minutes on, 5 minutes off. After four rounds, take a longer break. Finished sessions count towards your streak.</p>
+   </section></div></div></div>`;
+}
+function paintTimer(){
+  const t=fmt(timer.left);
+  const tm=$('#tm');if(tm)tm.textContent=t;
+  const rf=$('#trf');if(rf){const C=+rf.dataset.c;const frac=timer.total?(timer.total-timer.left)/timer.total:0;rf.style.strokeDashoffset=C*(1-frac);}
+  const pb=$('#tplay');if(pb)pb.textContent=timer.running?'Pause':(timer.left<timer.total?'Resume':'Start');
+  const dw=$('#dur-wrap');if(dw)dw.classList.toggle('locked',timer.running);
+  const pill=$('#pill');if(pill){pill.hidden=!(timer.running&&ui.view!=='focus');const pt=$('#pilltime');if(pt)pt.textContent=t;}
+  document.title=timer.running?`${t} · SyllabusPal`:APP_TITLE;
+}
+function addMins(m){const k=dayKey(new Date());state.mins[k]=(state.mins[k]||0)+m;}
+function setMode(m){stopTimer();timer.mode=m;timer.total=modeMins(m)*60;timer.left=timer.total;render();}
+function stopTimer(){clearInterval(timer.iv);timer.running=false;}
+function startTimer(){
+  if(timer.running)return;
+  audioCtx();
+  timer.running=true;timer.endAt=Date.now()+timer.left*1000;
+  timer.iv=setInterval(tick,250);paintTimer();
+}
+function tick(){
+  const left=Math.max(0,Math.round((timer.endAt-Date.now())/1000));
+  timer.left=left;paintTimer();
+  if(left<=0)finishTimer();
+}
+function pauseTimer(){if(!timer.running)return;tick();if(timer.running){stopTimer();paintTimer();}}
+function resetTimer(){
+  const left=timer.running?Math.max(0,Math.round((timer.endAt-Date.now())/1000)):timer.left;
+  const el=timer.total-left;
+  stopTimer();
+  if(timer.mode==='focus'&&el>=60){const m=Math.floor(el/60);addMins(m);save();toast(`Logged ${m} focus minute${m>1?'s':''}`);checkBadges();}
+  timer.left=timer.total;render();
+}
+function finishTimer(){
+  stopTimer();timerSound();
+  const wasFocus=timer.mode==='focus';
+  if(wasFocus){
+    const m=Math.round(timer.total/60);addMins(m);
+    const k=dayKey(new Date());state.sess[k]=(state.sess[k]||0)+1;
+    toast(`🎉 Focus session done, +${m} min`);confetti(90);
+  }else toast('Break over. Ready for the next round? 💪');
+  timer.left=timer.total;save();render();
+  if(wasFocus&&timer.topic){
+    const f=findTopic(timer.topic);
+    if(f&&!f.t.done){
+      confirmBox(`Did you finish "${f.t.text}"?`,'Yes, mark it completed',()=>{
+        const bu=uStats(f.u).pct,bs=sStats(f.s).pct;
+        f.t.done=true;f.t.status=3;f.t.doneAt=Date.now();timer.topic='';save();render();celebrate(f.s,f.u,bu,bs);checkBadges();
+      });
+    }
+  }
+  checkBadges();
+}
+
+/* ======================================================================
+   UPGRADE: timer-end sounds, Active Recall, daily streaks, welcome gate
+   ====================================================================== */
+
+/* ---------- timer-end sounds (synthesised in the browser, no files) ---------- */
+const SOUNDS=[
+  {id:'bell',name:'Soft bell',ico:'🔔'},
+  {id:'chime',name:'Wind chime',ico:'🎐'},
+  {id:'beep',name:'Classic beep',ico:'📟'},
+  {id:'alarm',name:'Alarm clock',ico:'⏰'},
+  {id:'marimba',name:'Marimba',ico:'🎶'},
+  {id:'bowl',name:'Singing bowl',ico:'🧘'},
+  {id:'arcade',name:'Arcade win',ico:'🎮'},
+  {id:'none',name:'Silent',ico:'🔇'}
+];
+let sndCtx=null,sndMaster=null;
+function audioCtx(){
+  const A=window.AudioContext||window.webkitAudioContext;if(!A)return null;
+  try{if(!sndCtx)sndCtx=new A();if(sndCtx.state==='suspended')sndCtx.resume();}catch(e){return null;}
+  return sndCtx;
+}
+function note(c,out,f,t,d,type,v,a){
+  const o=c.createOscillator(),g=c.createGain();
+  o.type=type||'sine';o.frequency.setValueAtTime(f,t);
+  g.gain.setValueAtTime(.0001,t);
+  g.gain.exponentialRampToValueAtTime(Math.max(.0002,v),t+(a||.015));
+  g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  o.connect(g);g.connect(out);o.start(t);o.stop(t+d+.05);
+}
+/* each recipe schedules its notes from time t and returns its length in seconds */
+const RECIPES={
+  beep:(c,o,t)=>{[0,.22,.44].forEach((d,i)=>note(c,o,i===2?880:660,t+d,.2,'sine',.7,.01));return .75;},
+  bell:(c,o,t)=>{const f=523.25;[[1,1,2.4],[2.01,.55,1.8],[2.76,.4,1.3],[4.07,.25,.9],[5.4,.15,.6]].forEach(p=>note(c,o,f*p[0],t,p[2],'sine',.55*p[1],.004));return 2.2;},
+  chime:(c,o,t)=>{[1318.5,1568,1760,2093,1760,2349.3].forEach((f,i)=>note(c,o,f,t+i*.15,1.2,'sine',.38,.005));return 2.1;},
+  alarm:(c,o,t)=>{for(let i=0;i<8;i++)note(c,o,i%2?988:784,t+i*.14,.12,'square',.22,.004);return 1.2;},
+  marimba:(c,o,t)=>{[392,494,587,784].forEach((f,i)=>{note(c,o,f,t+i*.14,.5,'triangle',.7,.004);note(c,o,f*4,t+i*.14,.09,'sine',.18,.002);});return 1.1;},
+  bowl:(c,o,t)=>{note(c,o,196,t,4.2,'sine',.7,.04);note(c,o,196*2.71,t,3.2,'sine',.3,.04);note(c,o,196*5.4,t,2,'sine',.12,.04);return 4.4;},
+  arcade:(c,o,t)=>{[523.25,659.25,783.99,1046.5,783.99,1046.5].forEach((f,i)=>note(c,o,f,t+i*.09,.13,'square',.2,.003));return .95;}
+};
+function stopSound(){
+  if(!sndMaster||!sndCtx)return;
+  try{sndMaster.gain.cancelScheduledValues(sndCtx.currentTime);sndMaster.gain.setValueAtTime(0,sndCtx.currentTime);}catch(e){}
+  sndMaster=null;
+}
+function playSound(id,vol,repeat){
+  stopSound();
+  if(id==='none')return;
+  if(!RECIPES[id])id='bell';
+  const c=audioCtx();if(!c)return;
+  const m=c.createGain();m.gain.value=Math.max(0,Math.min(1,(+vol||70)/100));m.connect(c.destination);sndMaster=m;
+  const n=Math.min(5,Math.max(1,parseInt(repeat,10)||1));
+  let t=c.currentTime+.05;
+  for(let i=0;i<n;i++)t+=RECIPES[id](c,m,t)+.3;
+}
+function timerSound(){
+  const s=state.sound;playSound(s.id,s.vol,s.repeat);
+  try{if(navigator.vibrate)navigator.vibrate([300,150,300]);}catch(e){}
+}
+function setDur(m){
+  m=Math.min(300,Math.max(1,Math.round(+m||0)));
+  state.pomo[timer.mode]=m;save();stopTimer();timer.total=m*60;timer.left=timer.total;render();
+}
+function soundCard(){
+  const s=state.sound;
+  return `<section class="card">
+    <h2>Timer-end sound</h2>
+    <p class="sub">Plays when a focus session or break finishes. Tap anywhere to silence it.</p>
+    <div class="snd-grid">${SOUNDS.map(x=>`<button type="button" class="snd ${s.id===x.id?'on':''}" aria-pressed="${s.id===x.id}" data-action="snd-pick" data-id="${x.id}"><span>${x.ico}</span>${x.name}</button>`).join('')}</div>
+    <div class="snd-ctl">
+      <label for="snd-vol">Volume <input type="range" id="snd-vol" min="10" max="100" step="5" value="${s.vol}"><output id="snd-vol-o" for="snd-vol">${s.vol}%</output></label>
+      <label for="snd-rep">Repeat <select id="snd-rep" class="inp">${[1,2,3,5].map(n=>`<option value="${n}" ${s.repeat===n?'selected':''}>${n} time${n>1?'s':''}</option>`).join('')}</select></label>
+      <div><button type="button" class="btn sm primary" data-action="snd-test">▶ Preview sound</button></div>
+    </div>
+  </section>`;
+}
+
+/* ---------- daily streaks ---------- */
+function daysBetween(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/DAY);}
+function longestStreak(){
+  const keys=Array.from(activeDays()).sort();let best=0,run=0,prev=null;
+  keys.forEach(k=>{run=(prev&&daysBetween(prev,k)===1)?run+1:1;if(run>best)best=run;prev=k;});
+  return best;
+}
+const STREAK_STEPS=[3,7,14,30,60,100];
+function streakCard(){
+  const set=activeDays(),sk=streak(),best=Math.max(longestStreak(),sk),today=dayKey(new Date());
+  const doneToday=set.has(today);
+  const now=new Date();now.setHours(0,0,0,0);
+  const start=new Date(now);start.setDate(start.getDate()-((now.getDay()+6)%7)-28);
+  let cells='';
+  for(let i=0;i<35;i++){
+    const d=new Date(start);d.setDate(start.getDate()+i);const k=dayKey(d);
+    const cls=['sk-c'];if(set.has(k))cls.push('on');if(k===today)cls.push('today');if(d>now)cls.push('future');
+    cells+=`<div class="${cls.join(' ')}" title="${d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'})}${set.has(k)?': studied':''}">${d.getDate()}</div>`;
+  }
+  const next=STREAK_STEPS.find(m=>m>sk);
+  const goal=next?`<div><div class="row" style="justify-content:space-between;font-size:13px;font-weight:800"><span>Next goal: ${next} days</span><span class="muted">${next-sk} to go</span></div>${bar('streak',Math.round(sk/next*100),'thin')}</div>`
+    :`<div class="chip green">🏆 Past 100 days. Legend status.</div>`;
+  const action=doneToday?`<span class="chip green">✅ Today is counted</span>`
+    :`<button type="button" class="btn primary" data-action="checkin">🔥 Count today as a study day</button>`;
+  const risk=(sk>0&&!doneToday)?`<div class="sk-risk">Your ${sk}-day streak ends at midnight. Tick a topic, finish a focus session or a recall to keep it.</div>`:'';
+  return `<div class="card streak">
+    <h2>Daily streak</h2>
+    <div class="sk-top"><div class="sk-flame ${sk?'':'cold'}" aria-hidden="true">🔥</div>
+      <div class="grow"><div class="sk-num">${sk}<small> day${sk===1?'':'s'}</small></div><div class="muted" style="font-size:14px">Best ${best} · ${set.size} study day${set.size===1?'':'s'} in total</div></div></div>
+    ${risk}
+    <div class="row">${action}</div>
+    <div class="sk-cal" role="img" aria-label="Study calendar for the last five weeks">${['M','T','W','T','F','S','S'].map(l=>`<div class="sk-h">${l}</div>`).join('')}${cells}</div>
+    ${goal}
+    <p class="sk-note">A day counts when you complete a topic, finish a focus session, finish a recall, or tap the button above.</p>
+  </div>`;
+}
+
+/* ---------- Active Recall: whole unit on day 1, 3, 7, 14 and 30 ---------- */
+const RECALL_DAYS=[1,3,7,14,30];
+function addDaysKey(key,n){const d=new Date(key+'T00:00:00');d.setDate(d.getDate()+n);return dayKey(d);}
+function fmtDay(key){return new Date(key+'T00:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short'});}
+function recallInfo(r){
+  const cps=RECALL_DAYS.map(n=>{
+    const due=addDaysKey(r.start,n),done=!!r.done[n],diff=daysTo(due);
+    return{n,due,done,diff,state:done?'done':diff<0?'overdue':diff===0?'today':'later'};
+  });
+  const next=cps.find(c=>!c.done)||null;
+  return{cps,next,complete:!next,doneCount:cps.filter(c=>c.done).length};
+}
+function cpLabel(c){return c.done?'Done':c.diff<0?`${-c.diff}d late`:c.diff===0?'Today':c.diff===1?'Tomorrow':`in ${c.diff}d`;}
+function recallItems(){
+  return state.recall.map(r=>{const s=getSubject(r.s),u=s&&s.units.find(x=>x.id===r.u);return u?{r,s,u,i:recallInfo(r)}:null;}).filter(Boolean);
+}
+const isDue=x=>!!x.i.next&&(x.i.next.state==='today'||x.i.next.state==='overdue');
+function recallDueCount(){return recallItems().filter(isDue).length;}
+function recallStats(){
+  let checks=0,mastered=0;
+  state.recall.forEach(r=>{const i=recallInfo(r);checks+=i.doneCount+(r.past?r.past.length:0);mastered+=(i.complete?1:0)+((r.round||1)-1);});
+  return{checks,mastered};
+}
+function keepRecallDays(r){
+  Object.values(r.done||{}).concat(r.past||[]).forEach(ts=>{const k=dayKey(ts);if(!state.checkins[k])state.checkins[k]=ts;});
+}
+function cleanRecall(){
+  state.recall=state.recall.filter(r=>{
+    const s=getSubject(r.s),ok=s&&s.units.some(u=>u.id===r.u);
+    if(!ok)keepRecallDays(r);
+    return ok;
+  });
+}
+function findRecall(id){return state.recall.find(x=>x.id===id);}
+function activeRecallFor(unitId){return state.recall.find(r=>r.u===unitId&&!recallInfo(r).complete);}
+
+function addRecall(s,u,startKey){
+  if(!u.topics.length){toast('Add topics to this unit first');return false;}
+  if(activeRecallFor(u.id)){toast(`"${u.name}" is already in Active Recall`);return false;}
+  const today=dayKey(new Date());
+  let start=/^\d{4}-\d{2}-\d{2}$/.test(startKey||'')?startKey:today;if(start>today)start=today;
+  const r={id:uid(),s:s.id,u:u.id,start,done:{},round:1,at:Date.now()};
+  state.recall.push(r);save();render();
+  toast(`🧠 "${u.name}" added. Recall on day 1, 3, 7, 14 and 30`,()=>{state.recall=state.recall.filter(x=>x.id!==r.id);save();render();});
+  return true;
+}
+function finishRecall(r,n,msg,undoFn){
+  save();render();
+  const s=getSubject(r.s),u=s&&s.units.find(x=>x.id===r.u);
+  if(recallInfo(r).complete){confetti(160);toast(`🎓 "${u?u.name:'Unit'}" is locked in. All 5 recalls done!`,undoFn);}
+  else toast(msg,undoFn);
+  checkBadges();
+}
+function markRecallDay(r,n,msg){
+  r.done[n]=Date.now();
+  finishRecall(r,n,msg,()=>{delete r.done[n];save();render();});
+}
+function recallSession(rid){
+  const r=findRecall(rid);if(!r)return;
+  const s=getSubject(r.s),u=s&&s.units.find(x=>x.id===r.u);if(!u)return;
+  const info=recallInfo(r);if(!info.next)return;
+  if(!u.topics.length){toast('Add topics to this unit first');return;}
+  const n=info.next.n,got=new Set();
+  openModal(`<h3>Day ${n} recall</h3>
+    <div style="font-weight:800;margin-top:2px">${s.emoji} ${esc(u.name)}</div>
+    <p class="muted" style="font-size:14px;margin:6px 0 0">Close your notes. Try to explain each topic from memory, then tick the ones you could. Unticked topics need another look.</p>
+    <div class="rs-list">${u.topics.map(t=>`<button type="button" class="rs-row" aria-pressed="false" data-t="${t.id}"><span class="rs-box">${CHECK}</span><span class="grow">${esc(t.text)}</span></button>`).join('')}</div>
+    <div class="rs-sum"><span id="rs-n">0</span> of ${u.topics.length} remembered</div>
+    <label class="rs-opt"><input type="checkbox" id="rs-flag" checked> Set the topics I missed to “Revise it”</label>
+    <div class="mactions"><span class="grow"></span><button class="btn" id="rs-no">Cancel</button><button class="btn primary" id="rs-ok">Finish day ${n} recall</button></div>`,m=>{
+    $('.rs-list',m).addEventListener('click',e=>{
+      const b=e.target.closest('.rs-row');if(!b)return;
+      const id=b.dataset.t,on=!got.has(id);on?got.add(id):got.delete(id);
+      b.setAttribute('aria-pressed',on);$('#rs-n',m).textContent=got.size;
+    });
+    $('#rs-no',m).onclick=closeModal;
+    $('#rs-ok',m).onclick=()=>{
+      const flag=$('#rs-flag',m).checked,prev=[];
+      u.topics.forEach(t=>{
+        if(!got.has(t.id)&&flag&&t.status!==1&&t.status!==2){prev.push({id:t.id,status:t.status,done:t.done,doneAt:t.doneAt});applyTopicStatus(t,2);}
+      });
+      const total=u.topics.length,missed=total-got.size;
+      closeModal();
+      r.done[n]=Date.now();
+      finishRecall(r,n,`🧠 Day ${n} recall done: ${got.size} of ${total} remembered`+(missed&&flag?`. ${prev.length} set to Revise it`:''),()=>{
+        delete r.done[n];
+        prev.forEach(p=>{const t=u.topics.find(x=>x.id===p.id);if(t){t.status=p.status;t.done=p.done;t.doneAt=p.doneAt;}});
+        save();render();
+      });
+    };
+  });
+}
+function recallAddModal(){
+  const subs=state.subjects.filter(s=>s.units.some(u=>u.topics.length));
+  if(!subs.length){toast('Add topics to a unit first, then bring it back here');return;}
+  const today=dayKey(new Date());
+  const cur=subs.find(s=>s.id===state.active)||subs[0];
+  openModal(`<h3>Add a unit to Active Recall</h3>
+    <p class="muted" style="font-size:14px;margin:4px 0 0">The whole unit comes back on day 1, 3, 7, 14 and 30.</p>
+    <label class="lbl" for="ra-s">Subject</label>
+    <select id="ra-s" class="inp">${subs.map(s=>`<option value="${s.id}" ${s.id===cur.id?'selected':''}>${s.emoji} ${esc(s.name)}</option>`).join('')}</select>
+    <label class="lbl" for="ra-u">Unit</label>
+    <select id="ra-u" class="inp"></select>
+    <label class="lbl" for="ra-d">I studied it on <small>(day 1 is the day after this date)</small></label>
+    <input id="ra-d" class="inp" type="date" max="${today}" value="${today}">
+    <div class="mactions"><span class="grow"></span><button class="btn" id="ra-no">Cancel</button><button class="btn primary" id="ra-ok">Add to Active Recall</button></div>`,m=>{
+    const fill=()=>{
+      const s=getSubject($('#ra-s',m).value);
+      $('#ra-u',m).innerHTML=s.units.map((u,i)=>{
+        const busy=!!activeRecallFor(u.id),empty=!u.topics.length;
+        return `<option value="${u.id}" ${busy||empty?'disabled':''}>${esc(u.name)}${empty?' (no topics)':busy?' (already in recall)':''}</option>`;
+      }).join('');
+      const first=Array.from($('#ra-u',m).options).find(o=>!o.disabled);
+      if(first)$('#ra-u',m).value=first.value;
+    };
+    fill();$('#ra-s',m).onchange=fill;
+    $('#ra-no',m).onclick=closeModal;
+    $('#ra-ok',m).onclick=()=>{
+      const s=getSubject($('#ra-s',m).value),u=s&&s.units.find(x=>x.id===$('#ra-u',m).value);
+      if(!u||$('#ra-u',m).selectedOptions[0].disabled){toast('Pick a unit that has topics');return;}
+      closeModal();addRecall(s,u,$('#ra-d',m).value);
+    };
+  });
+}
+function recallCard(x){
+  const{r,s,u,i}=x,n=i.next;
+  const late=!!n&&n.state==='overdue',dueNow=!!n&&(n.state==='today'||late);
+  let chip;
+  if(i.complete)chip='<span class="chip green">🎓 All 5 recalls done</span>';
+  else if(late)chip=`<span class="chip red">Day ${n.n} recall is ${-n.diff} day${-n.diff>1?'s':''} late</span>`;
+  else if(n.state==='today')chip=`<span class="chip yellow">Day ${n.n} recall is due today</span>`;
+  else chip=`<span class="chip">Next: Day ${n.n}, ${n.diff===1?'tomorrow':'in '+n.diff+' days'}</span>`;
+  const acts=i.complete
+    ?`<button type="button" class="btn sm" data-action="recall-restart" data-r="${r.id}">Start another round</button>`
+    :`<button type="button" class="btn sm ${dueNow?'primary':''}" data-action="recall-open" data-r="${r.id}">${dueNow?'Recall now':'Recall early'}</button><button type="button" class="btn sm" data-action="recall-done" data-r="${r.id}" title="Mark this day done without the topic check">Mark done</button>`;
+  const rounds=(r.round||1)>1?` · round ${r.round}`:'';
+  return `<article class="card rc" style="--sc:${s.color}">
+    <div class="rc-top"><span class="rc-em" aria-hidden="true">${s.emoji}</span><div class="grow"><span class="rc-n">${esc(u.name)}</span><small>${esc(s.name)} · ${u.topics.length} topic${u.topics.length===1?'':'s'}${rounds}</small></div>${chip}</div>
+    <ol class="tl" aria-label="Recall schedule">${i.cps.map(c=>`<li class="tl-n ${c.state}" aria-label="Day ${c.n}: ${cpLabel(c)}"><span class="tl-dot">${c.done?CHECK:'D'+c.n}</span><small>${fmtDay(c.due)}</small><small class="st">${cpLabel(c)}</small></li>`).join('')}</ol>
+    <div class="rc-acts">${acts}<span class="grow"></span><button type="button" class="icon" data-action="recall-del" data-r="${r.id}" title="Remove from Active Recall" aria-label="Remove from Active Recall">🗑️</button></div>
+  </article>`;
+}
+function vRecall(){
+  if(!state.subjects.length)return emptyState();
+  const items=recallItems();
+  const due=items.filter(isDue).sort((a,b)=>a.i.next.diff-b.i.next.diff);
+  const soon=items.filter(x=>x.i.next&&!isDue(x)).sort((a,b)=>a.i.next.diff-b.i.next.diff);
+  const done=items.filter(x=>x.i.complete);
+  const late=due.filter(x=>x.i.next.state==='overdue').length;
+  const stat=(ico,c,val,label)=>`<div class="stat"><div class="ico" style="background:${c}">${ico}</div><div><b>${val}</b><span>${label}</span></div></div>`;
+  const sec=(title,chip,cards)=>`<section class="stack"><h2 class="sec-h">${title} ${chip}</h2>${cards}</section>`;
+  const hero=`<section class="hero rhero"><div>
+    <h1>Active recall</h1>
+    <p class="lead">Add a whole unit once. It comes back on day 1, 3, 7, 14 and 30, so you test your memory right as it starts to fade.</p>
+    <div class="tally"><span>Day 1</span><span>Day 3</span><span>Day 7</span><span>Day 14</span><span>Day 30</span></div>
+    <div class="row"><button type="button" class="btn dark" data-action="recall-new">+ Add a unit</button></div>
+  </div></section>`;
+  const stats=`<section class="stats">
+    ${stat('🔔','#ffd93d',due.length,'due now')}
+    ${stat('⏳','#ff5a5f',late,'running late')}
+    ${stat('🧠','#2ec4b6',items.length-done.length,'units in recall')}
+    ${stat('🎓','#8ad94b',done.length,'units locked in')}
+  </section>`;
+  if(!items.length){
+    return `<div class="stack">${hero}<div class="card empty"><div class="big-emoji">🧠</div><h2>Nothing to recall yet</h2>
+      <p>Pick a unit you have studied and add it. You can also tap “Add to Active Recall” inside any unit in the tracker.</p>
+      <div class="row" style="justify-content:center"><button type="button" class="btn primary" data-action="recall-new">Add my first unit</button></div></div></div>`;
+  }
+  return `<div class="stack">${hero}${stats}
+    ${due.length?sec('Due now',`<span class="chip red">${due.length}</span>`,due.map(recallCard).join('')):`<div class="card"><div class="li"><span class="em">🎉</span><div><b>All caught up</b><small>${soon.length?`Next recall: ${esc(soon[0].u.name)}, Day ${soon[0].i.next.n} ${soon[0].i.next.diff===1?'tomorrow':'in '+soon[0].i.next.diff+' days'}.`:'Nothing is due today.'}</small></div></div></div>`}
+    ${soon.length?sec('Coming up',`<span class="chip">${soon.length}</span>`,soon.map(recallCard).join('')):''}
+    ${done.length?sec('Locked in',`<span class="chip green">${done.length}</span>`,done.map(recallCard).join('')):''}
+  </div>`;
+}
+function recallDueCard(){
+  const items=recallItems(),due=items.filter(isDue).sort((a,b)=>a.i.next.diff-b.i.next.diff);
+  const soon=items.filter(x=>x.i.next&&!isDue(x)).sort((a,b)=>a.i.next.diff-b.i.next.diff);
+  let rows;
+  if(due.length){
+    rows=due.slice(0,3).map(x=>{const n=x.i.next;
+      return `<div class="li"><span class="em">${x.s.emoji}</span><div class="grow"><b>${esc(x.u.name)}</b><small>Day ${n.n} recall${n.state==='overdue'?`, ${-n.diff}d late`:', due today'}</small></div><button type="button" class="btn sm primary" data-action="recall-open" data-r="${x.r.id}">Recall</button></div>`;}).join('')
+      +(due.length>3?`<small class="muted">+ ${due.length-3} more due</small>`:'');
+  }else if(items.length){
+    rows=`<div class="li"><span class="em">✅</span><div><b>Nothing due today</b><small>${soon.length?`Next: ${esc(soon[0].u.name)}, Day ${soon[0].i.next.n} ${soon[0].i.next.diff===1?'tomorrow':'in '+soon[0].i.next.diff+' days'}`:'Every unit is locked in.'}</small></div></div>`;
+  }else{
+    rows=`<div class="li"><span class="em">🧠</span><div><b>No units in recall yet</b><small>Add a studied unit and it returns on day 1, 3, 7, 14 and 30.</small></div></div>`;
+  }
+  return `<div class="card"><h2>Active recall</h2><div class="list">${rows}</div><div class="row" style="margin-top:14px"><button type="button" class="btn sm" data-action="nav" data-view="recall">Open Active Recall</button>${items.length?'':'<button type="button" class="btn sm primary" data-action="recall-new">+ Add a unit</button>'}</div></div>`;
+}
+
+/* ---------- welcome / sign-in gate ---------- */
+const gate={tab:'in',checking:false,busy:false,manual:false,open:false,email:'',name:''};
+const gateEl=$('#gate');
+const SERVICE_MSG='Sign-in is not available right now. It needs an internet connection and the app opened from a web address (https:// or localhost), not straight from a file on your computer. You can skip for now and sign in later.';
+const AUTH_ERR={
+  'auth/invalid-email':'That email address does not look right.',
+  'auth/missing-password':'Enter your password.',
+  'auth/invalid-credential':'Wrong email or password. New here? Use Sign up.',
+  'auth/wrong-password':'Wrong email or password.',
+  'auth/user-not-found':'No account with that email. Use Sign up to create one.',
+  'auth/email-already-in-use':'An account with this email already exists. Use Sign in instead.',
+  'auth/weak-password':'Use at least 6 characters for the password.',
+  'auth/too-many-requests':'Too many attempts. Wait a few minutes and try again.',
+  'auth/popup-closed-by-user':'The Google window was closed before sign-in finished.',
+  'auth/popup-blocked':'Your browser blocked the Google pop-up. Allow pop-ups for this page and try again.',
+  'auth/network-request-failed':'No internet connection. Check your network and try again.',
+  'auth/unauthorized-domain':'This web address is not authorised in Firebase yet. Add it under Authentication, Settings, Authorized domains.',
+  'auth/operation-not-allowed':'This sign-in method is not switched on in Firebase yet.',
+  'auth/operation-not-supported-in-this-environment':SERVICE_MSG
+};
+function authMsg(res){
+  if(!res)return SERVICE_MSG;
+  if(res.code==='auth/cancelled-popup-request')return '';
+  return AUTH_ERR[res.code]||('Could not sign in: '+(res.message||'unknown error'));
+}
+function isGuest(){try{return sessionStorage.getItem('sp.guest')==='1';}catch(e){return false;}}
+function setGuest(v){try{v?sessionStorage.setItem('sp.guest','1'):sessionStorage.removeItem('sp.guest');}catch(e){}}
+function hadAccount(){try{return localStorage.getItem('sp.signedin')==='1';}catch(e){return false;}}
+function gateHTML(){
+  const up=gate.tab==='up';
+  const skip=gate.manual?'Not now, back to the app':'Skip for now and add my subjects';
+  const body=gate.checking
+    ?`<div class="gate-wait"><div class="spin" aria-hidden="true"></div><b>Checking your account</b><span class="muted">This only takes a moment.</span></div>`
+    :`<div class="modes gate-tabs" role="tablist">
+        <button type="button" role="tab" aria-selected="${!up}" class="${up?'':'on'}" data-g="tab" data-tab="in">Sign in</button>
+        <button type="button" role="tab" aria-selected="${up}" class="${up?'on':''}" data-g="tab" data-tab="up">Sign up</button>
+      </div>
+      <button type="button" class="btn gbtn" data-g="google"><span class="g-ico" aria-hidden="true">G</span>Continue with Google</button>
+      <div class="auth-divider">or use your email</div>
+      <form id="gate-form" novalidate>
+        ${up?`<label class="lbl" for="g-name">Your name <small>(optional)</small></label><input id="g-name" class="inp" maxlength="30" autocomplete="given-name" placeholder="What should we call you?" value="${esc(gate.name)}">`:''}
+        <label class="lbl" for="g-email">Email</label>
+        <input id="g-email" class="inp" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" value="${esc(gate.email)}">
+        <label class="lbl" for="g-pass">Password ${up?'<small>(6 or more characters)</small>':''}</label>
+        <div class="pw"><input id="g-pass" class="inp" type="password" autocomplete="${up?'new-password':'current-password'}" placeholder="${up?'Create a password':'Your password'}"><button type="button" class="pw-t" data-g="pw" aria-pressed="false">Show</button></div>
+        <div id="gate-msg" role="alert" aria-live="polite"></div>
+        <button type="submit" class="btn primary gsubmit">${up?'Create account':'Sign in'}</button>
+      </form>
+      ${up?'':'<button type="button" class="linkbtn" data-g="forgot">Forgot your password?</button>'}`;
+  return `<div class="gate-card" role="dialog" aria-modal="true" aria-labelledby="gate-h">
+    <div class="gate-in">
+      <div class="logo"><span class="logo-mark">📚</span><span>SyllabusPal</span></div>
+      <div><h1 id="gate-h" class="gate-h">${gate.checking?'Welcome back':up?'Create your account':'Sign in to SyllabusPal'}</h1>
+      <p class="muted" style="margin:6px 0 0;font-size:14px">${up?'Your progress is backed up and synced the moment you join.':'Your syllabus, streaks and recall schedule stay in sync on every device.'}</p></div>
+      ${body}
+    </div>
+    <button type="button" class="skipbar" data-g="skip">${skip}</button>
+  </div>`;
+}
+function paintGate(){
+  gateEl.innerHTML=gateHTML();
+  setTimeout(()=>{
+    if(!gate.open)return;
+    const coarse=window.matchMedia&&matchMedia('(pointer:coarse)').matches;
+    const f=(!coarse&&($('#g-email',gateEl)))||$('.skipbar',gateEl);
+    if(f)f.focus();
+  },30);
+}
+function setGate(open){
+  gate.open=open;gateEl.hidden=!open;
+  document.body.classList.toggle('gated',open);
+  ['header.top','#main','nav.bottom-nav'].forEach(sel=>{const el=$(sel);if(el){open?el.setAttribute('inert',''):el.removeAttribute('inert');}});
+}
+function showGate(manual){gate.manual=!!manual;setGate(true);paintGate();}
+function hideGate(){setGate(false);}
+function gMsg(kind,text){const el=$('#gate-msg',gateEl);if(!el)return;el.innerHTML=text?`<div class="gate-${kind}">${esc(text)}</div>`:'';}
+function gBusy(b){
+  gate.busy=b;
+  $$('.gsubmit,.gbtn',gateEl).forEach(x=>x.disabled=b);
+  const s=$('.gsubmit',gateEl);if(s)s.textContent=b?'Please wait...':(gate.tab==='up'?'Create account':'Sign in');
+}
+function afterAuth(msg){hideGate();if(msg)toast(msg);}
+async function gateGoogle(){
+  if(gate.busy)return;
+  if(!window.__authGoogle){gMsg('error',SERVICE_MSG);return;}
+  gMsg('','');gBusy(true);
+  const res=await window.__authGoogle();gBusy(false);
+  if(res&&res.ok)afterAuth('Signed in with Google');else gMsg('error',authMsg(res));
+}
+async function gateSubmit(){
+  if(gate.busy)return;
+  const up=gate.tab==='up';
+  const em=($('#g-email',gateEl).value||'').trim(),pw=$('#g-pass',gateEl).value;
+  gate.email=em;if(up)gate.name=($('#g-name',gateEl).value||'').trim();
+  if(!/^\S+@\S+\.\S+$/.test(em)){gMsg('error','Enter a valid email address.');$('#g-email',gateEl).focus();return;}
+  if(!pw){gMsg('error','Enter your password.');$('#g-pass',gateEl).focus();return;}
+  if(up&&pw.length<6){gMsg('error','Use at least 6 characters for the password.');$('#g-pass',gateEl).focus();return;}
+  const fn=up?window.__authEmailSignup:window.__authEmailLogin;
+  if(!fn){gMsg('error',SERVICE_MSG);return;}
+  gMsg('','');gBusy(true);
+  const res=up?await fn(em,pw,gate.name):await fn(em,pw);
+  gBusy(false);
+  if(res&&res.ok){
+    if(up&&gate.name&&!state.name){state.name=gate.name.split(' ')[0];save();render();}
+    afterAuth(up?'Account created. Welcome!':'Signed in');
+  }else gMsg('error',authMsg(res));
+}
+async function gateForgot(){
+  if(gate.busy)return;
+  const em=($('#g-email',gateEl).value||'').trim();gate.email=em;
+  if(!/^\S+@\S+\.\S+$/.test(em)){gMsg('error','Type your email above first, then tap Forgot your password.');$('#g-email',gateEl).focus();return;}
+  if(!window.__authReset){gMsg('error',SERVICE_MSG);return;}
+  gMsg('','');gBusy(true);
+  const res=await window.__authReset(em);gBusy(false);
+  if(res&&res.ok)gMsg('info','Reset link sent. Check your inbox and spam folder.');else gMsg('error',authMsg(res));
+}
+gateEl.addEventListener('click',e=>{
+  const b=e.target.closest('[data-g]');if(!b)return;
+  const g=b.dataset.g;
+  if(g==='tab'){if(gate.tab!==b.dataset.tab){gate.tab=b.dataset.tab;paintGate();}}
+  else if(g==='google')gateGoogle();
+  else if(g==='forgot')gateForgot();
+  else if(g==='skip'){setGuest(true);hideGate();}
+  else if(g==='pw'){
+    const inp=$('#g-pass',gateEl),show=inp.type==='password';
+    inp.type=show?'text':'password';b.textContent=show?'Hide':'Show';b.setAttribute('aria-pressed',show);
+  }
+});
+gateEl.addEventListener('submit',e=>{e.preventDefault();gateSubmit();});
+gateEl.addEventListener('input',e=>{
+  if(e.target.id==='g-email')gate.email=e.target.value;
+  if(e.target.id==='g-name')gate.name=e.target.value;
+});
+/* called by the Firebase module once it knows whether someone is signed in */
+let authWasIn=false;
+window.__onAuthResolved=function(user){
+  const wasChecking=gate.checking;gate.checking=false;
+  try{user?localStorage.setItem('sp.signedin','1'):localStorage.removeItem('sp.signedin');}catch(e){}
+  if(user){authWasIn=true;if(gate.open)hideGate();return;}
+  if(authWasIn){authWasIn=false;setGuest(false);gate.tab='in';showGate(false);return;}
+  if(gate.open&&wasChecking)paintGate();
+};
+function startGate(){
+  if(isGuest())return;
+  gate.checking=hadAccount();
+  showGate(false);
+  if(gate.checking)setTimeout(()=>{if(gate.checking&&gate.open){gate.checking=false;paintGate();}},3500);
+}
+document.addEventListener('pointerdown',stopSound,true);
+
+/* ---------- render ---------- */
+function theme(){return state.theme||(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+function render(){
+  document.documentElement.setAttribute('data-theme',theme());
+  $('#themebtn').textContent=theme()==='dark'?'☀️':'🌙';
+  $$('.navbtn').forEach(b=>b.classList.toggle('on',b.dataset.view===ui.view));
+  const m=$('#main');
+  m.innerHTML=ui.view==='dashboard'?vDash():ui.view==='tracker'?vTracker():ui.view==='recall'?vRecall():vFocus();
+  if(ui.view==='tracker')applyFilter();
+  const nDue=recallDueCount();$$('[data-recall-badge]').forEach(b=>{b.textContent=nDue;b.hidden=!nDue;});
+  paintTimer();
+  animate();
+  if(ui.focusSel){const f=$(ui.focusSel);if(f)f.focus();ui.focusSel=null;}
+  ui.pop=null;ui.popUnit=null;
+}
+function applyFilter(){
+  const q=ui.q.trim().toLowerCase();
+  $$('.topic').forEach(el=>{
+    const done=el.dataset.done==='1',star=el.dataset.star==='1',st=+el.dataset.status;
+    let show=true;
+    if(ui.filter==='pending')show=!done;
+    if(ui.filter==='done'||ui.filter==='s3')show=(st===3||done);
+    if(ui.filter==='s1')show=(st===1);
+    if(ui.filter==='s2')show=(st===2);
+    if(ui.filter==='star')show=star;
+    if(q&&!el.dataset.text.includes(q))show=false;
+    el.classList.toggle('hide',!show);
+  });
+  $$('.unit-b').forEach(b=>{
+    const total=$$('.topic',b).length,any=$$('.topic:not(.hide)',b).length;
+    const nm=$('.nomatch',b);if(nm)nm.hidden=!(total>0&&any===0);
+  });
+}
+
+/* ---------- toast, modal, confetti ---------- */
+function toast(msg,undo){
+  const el=document.createElement('div');el.className='toast';
+  const sp=document.createElement('span');sp.textContent=msg;el.appendChild(sp);
+  if(undo){const b=document.createElement('button');b.textContent='Undo';b.onclick=()=>{undo();el.remove();};el.appendChild(b);}
+  $('#toasts').appendChild(el);
+  setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),300);},undo?5000:3000);
+}
+function openModal(html,mount){
+  closeModal();
+  const ov=document.createElement('div');ov.className='overlay';
+  ov.innerHTML=`<div class="modal" role="dialog" aria-modal="true">${html}</div>`;
+  ov.addEventListener('mousedown',e=>{if(e.target===ov)closeModal();});
+  document.body.appendChild(ov);ui.modal=ov;
+  const m=$('.modal',ov);if(mount)mount(m);
+  setTimeout(()=>{const f=$('input:not([type=date]),textarea',ov);if(f)f.focus();},30);
+  return m;
+}
+function closeModal(){if(ui.modal){ui.modal.remove();ui.modal=null;}}
+function confirmBox(msg,okLabel,cb){
+  openModal(`<h3>Are you sure?</h3><p>${esc(msg)}</p><div class="mactions"><span class="grow"></span><button class="btn" id="c-no">Cancel</button><button class="btn primary" id="c-yes">${esc(okLabel)}</button></div>`,m=>{
+    $('#c-no',m).onclick=closeModal;$('#c-yes',m).onclick=()=>{closeModal();cb();};
+  });
+}
+function askText(o,cb){
+  openModal(`<h3>${esc(o.title)}</h3><label class="lbl" for="a-v">${esc(o.label)}</label>${o.multi?`<textarea id="a-v" class="inp" rows="8" placeholder="${esc(o.placeholder||'')}"></textarea>`:`<input id="a-v" class="inp" maxlength="140" value="${esc(o.value||'')}">`}<div class="mactions"><span class="grow"></span><button class="btn" id="a-no">Cancel</button><button class="btn primary" id="a-yes">${esc(o.ok||'Save')}</button></div>`,m=>{
+    const inp=$('#a-v',m);
+    const go=()=>{const v=inp.value.trim();if(!v)return;closeModal();cb(v);};
+    $('#a-no',m).onclick=closeModal;$('#a-yes',m).onclick=go;
+    if(!o.multi)inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+  });
+}
+const cv=$('#confetti'),cx=cv.getContext('2d');let parts=[],raf=null;
+function sizeCv(){cv.width=window.innerWidth;cv.height=window.innerHeight;}
+function confetti(n){
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  sizeCv();const cols=['#ff5a5f','#ff9f1c','#ffd93d','#8ad94b','#3a86ff','#8b6cff','#ff6fb5','#2ec4b6'];
+  for(let i=0;i<(n||140);i++)parts.push({x:cv.width/2+(Math.random()-.5)*cv.width*.3,y:cv.height*.4,vx:(Math.random()-.5)*15,vy:-Math.random()*15-4,g:.38,s:7+Math.random()*7,c:cols[i%cols.length],r:Math.random()*6.28,vr:(Math.random()-.5)*.4,life:0});
+  if(!raf)loop();
+}
+function loop(){
+  cx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p=>{p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.vx*=.99;p.r+=p.vr;p.life++;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);cx.restore();});
+  parts=parts.filter(p=>p.y<cv.height+30&&p.life<240);
+  if(parts.length)raf=requestAnimationFrame(loop);else{raf=null;cx.clearRect(0,0,cv.width,cv.height);}
+}
+window.addEventListener('resize',()=>{if(parts.length)sizeCv();});
+
+/* ---------- modals for subjects, auth & settings ---------- */
+function subjectModal(s){
+  const edit=!!s;let emoji=s?s.emoji:EMOJIS[0],color=s?s.color:COLORS[0];
+  openModal(`<h3>${edit?'Edit subject':'New subject'}</h3>
+   <label class="lbl" for="m-name">Subject name</label>
+   <input id="m-name" class="inp" maxlength="60" placeholder="e.g. Data Structures" value="${esc(s?s.name:'')}">
+   <label class="lbl">Emoji</label>
+   <div class="picks" id="m-emo">${EMOJIS.map(e=>`<button type="button" class="pick ${e===emoji?'on':''}" data-v="${e}" aria-label="Emoji ${e}">${e}</button>`).join('')}</div>
+   <label class="lbl">Colour</label>
+   <div class="picks" id="m-col">${COLORS.map(c=>`<button type="button" class="pick sw ${c===color?'on':''}" data-v="${c}" style="background:${c}" aria-label="Colour ${c}"></button>`).join('')}</div>
+   <label class="lbl" for="m-exam">Semester exam date <small>(optional, gives you a daily target)</small></label>
+   <input id="m-exam" class="inp" type="date" value="${esc(s?s.exam:'')}">
+   ${edit?'':`<label class="lbl" for="m-n">Number of units</label>
+   <select id="m-n" class="inp">${[3,4,5,6,7,8].map(n=>`<option ${n===5?'selected':''}>${n}</option>`).join('')}</select>
+   <label class="lbl" for="m-un">Unit names <small>(optional, one per line)</small></label>
+   <textarea id="m-un" class="inp" rows="4" placeholder="Introduction and arrays&#10;Linked lists&#10;Trees"></textarea>`}
+   <div class="mactions">${edit?'<button class="btn danger" id="m-del">Delete subject</button>':''}<span class="grow"></span><button class="btn" id="m-cancel">Cancel</button><button class="btn primary" id="m-ok">${edit?'Save changes':'Create subject'}</button></div>`,m=>{
+    $('#m-emo',m).addEventListener('click',e=>{const b=e.target.closest('.pick');if(!b)return;emoji=b.dataset.v;$$('.pick',$('#m-emo',m)).forEach(x=>x.classList.toggle('on',x===b));});
+    $('#m-col',m).addEventListener('click',e=>{const b=e.target.closest('.pick');if(!b)return;color=b.dataset.v;$$('.pick',$('#m-col',m)).forEach(x=>x.classList.toggle('on',x===b));});
+    $('#m-cancel',m).onclick=closeModal;
+    if(edit)$('#m-del',m).onclick=()=>{closeModal();confirmBox(`Delete "${s.name}" and all its units and topics?`,'Delete subject',()=>{
+      state.subjects=state.subjects.filter(x=>x.id!==s.id);cleanRecall();state.active=state.subjects[0]?state.subjects[0].id:null;save();render();toast('Subject deleted');});};
+    $('#m-ok',m).onclick=()=>{
+      const name=$('#m-name',m).value.trim();
+      if(!name){$('#m-name',m).focus();return;}
+      const exam=$('#m-exam',m).value;
+      if(edit){s.name=name;s.emoji=emoji;s.color=color;s.exam=exam;save();closeModal();render();toast('Subject updated');return;}
+      const lines=($('#m-un',m).value||'').split('\n').map(x=>x.trim()).filter(Boolean);
+      const n=Math.min(12,Math.max(+$('#m-n',m).value,lines.length));
+      const units=Array.from({length:n},(_,i)=>({name:lines[i]||'Unit '+(i+1),topics:[]}));
+      const ns=makeSubject({name,emoji,color,exam,units});
+      state.subjects.push(ns);state.active=ns.id;ui.view='tracker';save();closeModal();render();window.scrollTo({top:0});
+      toast('Subject created. Add topics to each unit.');
+    };
+  });
+}
+function settingsModal(){
+  openModal(`<h3>Settings</h3>
+   <label class="lbl" for="s-name">Your name <small>(shown on the home page)</small></label>
+   <input id="s-name" class="inp" maxlength="30" value="${esc(state.name)}" placeholder="What should we call you?">
+   <label class="lbl">Look</label>
+   <div class="seg-opts">${[['light','☀️ Light'],['dark','🌙 Dark'],['','💻 Match device']].map(o=>`<button class="fchip ${(state.theme||'')===o[0]?'on':''}" data-th="${o[0]}">${o[1]}</button>`).join('')}</div>
+   <label class="lbl">Backup</label>
+   <div class="seg-opts"><button class="btn sm" id="s-exp">Download backup</button><button class="btn sm" id="s-imp">Restore from file</button><button class="btn sm danger" id="s-rst">Erase everything</button></div>
+   <p class="muted" style="font-size:13px;margin:12px 0 0">${persistent?'Your progress is saved locally and automatically synced to Firebase when you are signed in.':'This browser is blocking local storage. Sign in to save your progress to Firebase cloud.'}</p>
+   <div class="mactions"><span class="grow"></span><button class="btn primary" id="s-ok">Done</button></div>`,m=>{
+    $$('[data-th]',m).forEach(b=>b.onclick=()=>{state.theme=b.dataset.th||null;save();document.documentElement.setAttribute('data-theme',theme());$$('[data-th]',m).forEach(x=>x.classList.toggle('on',x===b));$('#themebtn').textContent=theme()==='dark'?'☀️':'🌙';});
+    $('#s-ok',m).onclick=()=>{state.name=$('#s-name',m).value.trim();save();closeModal();render();};
+    $('#s-exp',m).onclick=()=>{
+      try{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='syllabuspal-backup-'+dayKey(new Date())+'.json';document.body.appendChild(a);a.click();a.remove();toast('Backup downloaded');}
+      catch(e){toast('Could not create the backup file here');}
+    };
+    $('#s-imp',m).onclick=()=>$('#imp').click();
+    $('#s-rst',m).onclick=()=>{closeModal();confirmBox('This erases every subject, topic and stat. This cannot be undone.','Erase everything',()=>{state=defaults();save();ui.view='dashboard';render();toast('All data erased');});};
+  });
+}
+
+/* ---------- samples ---------- */
+const SAMPLES=[
+ {name:'Data Structures',emoji:'💻',color:'#3a86ff',units:[
+  {name:'Introduction and arrays',topics:['Time and space complexity','Asymptotic notations','Arrays and 2D arrays','Linear and binary search','Basic sorting techniques']},
+  {name:'Linked lists, stacks and queues',topics:['Singly linked list','Doubly and circular linked lists','Stack operations','Infix to postfix conversion','Queue and circular queue','Priority queue']},
+  {name:'Trees',topics:['Binary trees and traversals','Binary search tree operations','AVL trees','Heaps and heap sort','B-trees']},
+  {name:'Graphs',topics:['Graph representations','BFS and DFS','Dijkstra shortest path','Minimum spanning trees','Topological sort']},
+  {name:'Hashing and advanced sorting',topics:['Hash functions','Collision resolution','Merge sort','Quick sort','Radix and counting sort']}]},
+ {name:'Engineering Mathematics',emoji:'📐',color:'#ff9f1c',units:[
+  {name:'Matrices',topics:['Rank of a matrix','Eigenvalues and eigenvectors','Cayley-Hamilton theorem','Diagonalisation']},
+  {name:'Differential calculus',topics:['Successive differentiation','Partial derivatives',"Euler's theorem",'Maxima and minima']},
+  {name:'Integral calculus',topics:['Beta and Gamma functions','Double integrals','Triple integrals','Change of variables']},
+  {name:'Differential equations',topics:['First-order equations','Constant coefficient equations','Variation of parameters','Cauchy-Euler equation']},
+  {name:'Vector calculus',topics:['Gradient, divergence and curl','Line and surface integrals',"Green's theorem",'Gauss and Stokes theorems']}]}
+];
+function loadSamples(){
+  SAMPLES.forEach((sm,si)=>{
+    const s=makeSubject({name:sm.name,emoji:sm.emoji,color:sm.color,exam:dayKey(Date.now()+(si?34:27)*DAY),units:sm.units});
+    let k=0;
+    s.units.forEach((u,a)=>u.topics.forEach((t,b)=>{
+      const want=si===0?(a===0||(a===1&&b<4)||(a===2&&b<2)):((a===0&&b<3)||(a===1&&b<1));
+      if(want){t.done=true;t.status=3;t.doneAt=Date.now()-(k++%6)*DAY-Math.random()*2e6;}
+      else if(a===1&&b===4){t.status=2;}
+      else if(a===2&&b===2){t.status=1;}
+    }));
+    if(si===0){s.units[2].topics[3].diff=3;s.units[3].topics[2].star=true;s.units[3].topics[2].diff=2;}
+    state.subjects.push(s);
+  });
+  state.active=state.subjects[state.subjects.length-SAMPLES.length].id;
+  save();checkBadges(true);render();toast('Sample subjects added. Delete them any time from Edit subject.');
+}
+
+/* ---------- actions ---------- */
+function celebrate(s,u,bu,bs){
+  const au=uStats(u).pct,as=sStats(s).pct;
+  if(as===100&&bs<100){ui.popUnit=u.id;render();confetti(280);toast(`🏆 ${s.name} fully covered!`);}
+  else if(au===100&&bu<100){ui.popUnit=u.id;render();confetti(150);toast(`🎉 ${u.name} complete!`);}
+}
+function curUnit(el){const s=activeSubject();const ue=el.closest('[data-u]');return{s,u:s.units.find(x=>x.id===ue.dataset.u)};}
+function scrollToUnit(id){setTimeout(()=>{const e=document.getElementById('u-'+id);if(e){e.scrollIntoView({behavior:'smooth',block:'start'});e.classList.add('flash');}},60);}
+function addTopicFrom(inp){
+  const txt=inp.value.trim();if(!txt)return;
+  const{u}=curUnit(inp);u.topics.push(mkTopic(txt));u.collapsed=false;save();
+  ui.focusSel=`#u-${u.id} .addinp`;render();
+}
+function applyTopicStatus(t,newStatus){
+  t.status=newStatus;
+  if(newStatus===3){
+    t.done=true;
+    t.doneAt=t.doneAt||Date.now();
+  }else{
+    t.done=false;
+    t.doneAt=null;
+  }
+}
+
+const actions={
+  nav(el){ui.view=el.dataset.view;render();window.scrollTo({top:0});},
+  theme(){state.theme=theme()==='dark'?'light':'dark';save();render();},
+  settings(){settingsModal();},
+  'open-auth'(){showGate(true);},
+  'sign-out'(){if(window.__authSignOut)window.__authSignOut();},
+  'new-subject'(){subjectModal();},
+  sample(){loadSamples();},
+  'pick-subject'(el){state.active=el.dataset.s;save();render();},
+  'open-subject'(el){state.active=el.dataset.s;ui.view='tracker';save();render();window.scrollTo({top:0});},
+  goto(el){
+    state.active=el.dataset.s;ui.view='tracker';
+    const u=activeSubject().units.find(x=>x.id===el.dataset.u);if(u)u.collapsed=false;
+    save();render();scrollToUnit(el.dataset.u);
+  },
+  jump(el){
+    const u=activeSubject().units.find(x=>x.id===el.dataset.u);
+    if(u&&u.collapsed){u.collapsed=false;save();render();}
+    scrollToUnit(el.dataset.u);
+  },
+  'edit-subject'(){subjectModal(activeSubject());},
+  'toggle-unit'(el){const{u}=curUnit(el);u.collapsed=!u.collapsed;save();render();},
+  'rename-unit'(el){const{u}=curUnit(el);askText({title:'Rename unit',label:'Unit name',value:u.name},v=>{u.name=v;save();render();});},
+  'add-unit'(){const s=activeSubject();s.units.push({id:uid(),name:'Unit '+(s.units.length+1),collapsed:false,topics:[]});save();render();toast('Unit added');},
+  'del-unit'(el){
+    const{s,u}=curUnit(el);
+    const go=()=>{s.units=s.units.filter(x=>x.id!==u.id);cleanRecall();save();render();toast('Unit removed');};
+    if(u.topics.length)confirmBox(`Remove "${u.name}" and its ${u.topics.length} topics?`,'Remove unit',go);else go();
+  },
+  'toggle-topic'(el){
+    const tr=el.closest('.topic');const{s,u}=curUnit(tr);const t=u.topics.find(x=>x.id===tr.dataset.t);
+    const bu=uStats(u).pct,bs=sStats(s).pct;
+    const nextStatus=t.done?0:3;
+    applyTopicStatus(t,nextStatus);
+    ui.pop=t.done?t.id:null;
+    save();render();celebrate(s,u,bu,bs);checkBadges();
+  },
+  'set-status'(el){
+    const tr=el.closest('.topic');const{s,u}=curUnit(tr);const t=u.topics.find(x=>x.id===tr.dataset.t);
+    const bu=uStats(u).pct,bs=sStats(s).pct;
+    const target=+el.dataset.status;
+    const nextStatus=(t.status===target)?0:target;
+    applyTopicStatus(t,nextStatus);
+    ui.pop=t.done?t.id:null;
+    save();render();celebrate(s,u,bu,bs);checkBadges();
+  },
+  'cycle-diff'(el){const tr=el.closest('.topic');const{u}=curUnit(tr);const t=u.topics.find(x=>x.id===tr.dataset.t);t.diff=(t.diff+1)%4;save();render();},
+  star(el){const tr=el.closest('.topic');const{u}=curUnit(tr);const t=u.topics.find(x=>x.id===tr.dataset.t);t.star=!t.star;save();render();},
+  'edit-topic'(el){const tr=el.closest('.topic');const{u}=curUnit(tr);const t=u.topics.find(x=>x.id===tr.dataset.t);askText({title:'Edit topic',label:'Topic',value:t.text},v=>{t.text=v;save();render();});},
+  'del-topic'(el){
+    const tr=el.closest('.topic');const{u}=curUnit(tr);const i=u.topics.findIndex(x=>x.id===tr.dataset.t);const t=u.topics[i];
+    u.topics.splice(i,1);save();render();
+    toast('Topic deleted',()=>{u.topics.splice(Math.min(i,u.topics.length),0,t);save();render();});
+  },
+  'add-topic'(el){addTopicFrom($('.addinp',el.closest('.unit-b')));},
+  bulk(el){
+    const{u}=curUnit(el);
+    askText({title:'Bulk add topics',label:'Paste your syllabus list, one topic per line',multi:true,placeholder:'Binary trees\nTree traversals\nAVL trees',ok:'Add topics'},v=>{
+      const lines=v.split('\n').map(x=>x.replace(/^\s*(?:[-*•]|\d+[.)])\s+/,'').trim()).filter(Boolean);
+      lines.forEach(l=>u.topics.push(mkTopic(l.slice(0,140))));u.collapsed=false;save();render();toast(`${lines.length} topic${lines.length!==1?'s':''} added`);
+    });
+  },
+  'mark-all'(el){
+    const{s,u}=curUnit(el);const bu=uStats(u).pct,bs=sStats(s).pct;
+    const prev=u.topics.map(t=>({id:t.id,status:t.status,done:t.done,doneAt:t.doneAt}));
+    u.topics.forEach(t=>applyTopicStatus(t,3));
+    save();render();celebrate(s,u,bu,bs);checkBadges();
+    toast(`✅ All topics in "${u.name}" marked Completed`,()=>{
+      prev.forEach(p=>{const t=u.topics.find(x=>x.id===p.id);if(t){t.status=p.status;t.done=p.done;t.doneAt=p.doneAt;}});
+      save();render();
+    });
+  },
+  'revise-unit'(el){
+    const{u}=curUnit(el);
+    if(!u.topics.length){toast('Add topics to this unit first');return;}
+    const prev=u.topics.map(t=>({id:t.id,status:t.status,done:t.done,doneAt:t.doneAt}));
+    u.topics.forEach(t=>applyTopicStatus(t,2));
+    save();render();
+    toast(`🔄 "${u.name}" set to Revise it`,()=>{
+      prev.forEach(p=>{const t=u.topics.find(x=>x.id===p.id);if(t){t.status=p.status;t.done=p.done;t.doneAt=p.doneAt;}});
+      save();render();
+    });
+  },
+  'relearn-unit'(el){
+    const{u}=curUnit(el);
+    if(!u.topics.length){toast('Add topics to this unit first');return;}
+    const prev=u.topics.map(t=>({id:t.id,status:t.status,done:t.done,doneAt:t.doneAt}));
+    u.topics.forEach(t=>applyTopicStatus(t,1));
+    save();render();
+    toast(`🔴 "${u.name}" set to Need to learn again`,()=>{
+      prev.forEach(p=>{const t=u.topics.find(x=>x.id===p.id);if(t){t.status=p.status;t.done=p.done;t.doneAt=p.doneAt;}});
+      save();render();
+    });
+  },
+  'revise-all-subject'(){
+    const s=activeSubject();
+    const allTopics=s.units.flatMap(u=>u.topics);
+    if(!allTopics.length){toast('No topics in this subject yet');return;}
+    const prev=allTopics.map(t=>({id:t.id,status:t.status,done:t.done,doneAt:t.doneAt}));
+    s.units.forEach(u=>{u.collapsed=false;u.topics.forEach(t=>applyTopicStatus(t,2));});
+    save();render();
+    toast(`📝 Exam mode: all ${allTopics.length} topics in "${s.name}" set to Revise it`,()=>{
+      prev.forEach(p=>{
+        for(const u of s.units){const t=u.topics.find(x=>x.id===p.id);if(t){t.status=p.status;t.done=p.done;t.doneAt=p.doneAt;break;}}
+      });
+      save();render();
+    });
+  },
+  'reset-unit'(el){
+    const{u}=curUnit(el);
+    u.topics.forEach(t=>applyTopicStatus(t,0));
+    save();render();
+  },
+  filter(el){ui.filter=el.dataset.f;render();},
+  'expand-all'(){activeSubject().units.forEach(u=>u.collapsed=false);save();render();},
+  'collapse-all'(){activeSubject().units.forEach(u=>u.collapsed=true);save();render();},
+  't-toggle'(){if(timer.running)pauseTimer();else startTimer();},
+  't-reset'(){resetTimer();},
+  't-mode'(el){setMode(el.dataset.m);},
+  't-dur'(el){if(timer.running){toast('Pause the timer to change the time');return;}setDur(+el.dataset.m);},
+  't-step'(el){if(timer.running){toast('Pause the timer to change the time');return;}setDur(modeMins(timer.mode)+(+el.dataset.d));},
+  't-custom'(){
+    if(timer.running){toast('Pause the timer to change the time');return;}
+    const v=parseInt(($('#t-custom')||{}).value,10);
+    if(!v||v<1||v>300){toast('Pick a time between 1 and 300 minutes');return;}
+    setDur(v);
+  },
+  'snd-pick'(el){
+    state.sound.id=el.dataset.id;save();
+    $$('.snd').forEach(b=>{const on=b===el;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on);});
+    playSound(state.sound.id,state.sound.vol,1);
+  },
+  'snd-test'(){const s=state.sound;playSound(s.id,s.vol,s.repeat);if(s.id==='none')toast('Sound is set to Silent');},
+  checkin(){
+    state.checkins[dayKey(new Date())]=Date.now();save();render();
+    const sk=streak();toast(`🔥 ${sk}-day streak!`);if(STREAK_STEPS.includes(sk))confetti(120);checkBadges();
+  },
+  'recall-add'(el){const{s,u}=curUnit(el);addRecall(s,u);},
+  'recall-new'(){recallAddModal();},
+  'recall-open'(el){recallSession(el.dataset.r);},
+  'recall-done'(el){
+    const r=findRecall(el.dataset.r);if(!r)return;const i=recallInfo(r);if(!i.next)return;
+    markRecallDay(r,i.next.n,`🧠 Day ${i.next.n} recall marked done`);
+  },
+  'recall-del'(el){
+    const r=findRecall(el.dataset.r);if(!r)return;
+    const idx=state.recall.indexOf(r);keepRecallDays(r);
+    state.recall.splice(idx,1);save();render();
+    toast('Removed from Active Recall',()=>{state.recall.splice(Math.min(idx,state.recall.length),0,r);save();render();});
+  },
+  'recall-restart'(el){
+    const r=findRecall(el.dataset.r);if(!r)return;
+    const old={start:r.start,done:r.done,past:r.past,round:r.round};
+    r.past=(r.past||[]).concat(Object.values(r.done));r.done={};r.start=dayKey(new Date());r.round=(r.round||1)+1;
+    save();render();
+    toast(`🧠 Round ${r.round} started. First recall tomorrow`,()=>{Object.assign(r,old);if(old.past===undefined)delete r.past;save();render();});
+  }
+};
+
+/* Expose hooks for the Firebase module script */
+window.__loadCloudState=function(cloudData){
+  if(!cloudData||!Array.isArray(cloudData.subjects))return;
+  state=normalizeState(cloudData);
+  save(true);
+  checkBadges(true);
+  render();
+};
+window.__getLocalState=function(){return state;};
+window.__closeAuthModal=closeModal;
+window.__toast=toast;
+
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-action]');if(!el)return;
+  const fn=actions[el.dataset.action];if(fn)fn(el,e);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&gate.open&&gate.manual&&!ui.modal){hideGate();return;}
+  if(e.key==='Enter'&&e.target.id==='t-custom'){e.preventDefault();actions['t-custom']();return;}
+  if(e.key==='Escape'&&ui.modal){closeModal();return;}
+  if(e.key==='Enter'&&e.target.classList&&e.target.classList.contains('addinp')){e.preventDefault();addTopicFrom(e.target);return;}
+  if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[role=button][data-action]')){e.preventDefault();e.target.click();}
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='q'){ui.q=e.target.value;applyFilter();}
+  if(e.target.id==='snd-vol'){state.sound.vol=+e.target.value;const o=$('#snd-vol-o');if(o)o.textContent=e.target.value+'%';}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='snd-vol')save();
+  if(e.target.id==='snd-rep'){state.sound.repeat=+e.target.value;save();}
+  if(e.target.id==='f-subj'){timer.subj=e.target.value;timer.topic='';render();}
+  if(e.target.id==='f-topic'){timer.topic=e.target.value;}
+  if(e.target.id==='imp'){
+    const f=e.target.files&&e.target.files[0];if(!f)return;
+    const rd=new FileReader();
+    rd.onload=()=>{
+      try{const d=JSON.parse(rd.result);if(!d||!Array.isArray(d.subjects))throw new Error('bad');
+        state=normalizeState(d);
+        save();closeModal();ui.view='dashboard';render();toast('Backup restored');}
+      catch(err){toast('That file is not a SyllabusPal backup');}
+      e.target.value='';
+    };
+    rd.readAsText(f);
+  }
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&timer.running)tick();});
+
+checkBadges(true);
+render();
+startGate();
+})();
+</script>
+
+<!-- Firebase Auth & Firestore Automatic Progress Sync -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-analytics.js";
+  import {
+    getAuth,
+    onAuthStateChanged,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    updateProfile,
+    sendPasswordResetEmail,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc
+  } from "https://www.gstatic.com/firebasejs/13.2.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDfdNkh9xwJBZ7A6JdgmnbyWFRsSWMSoBw",
+    authDomain: "mywebprogress.firebaseapp.com",
+    projectId: "mywebprogress",
+    storageBucket: "mywebprogress.firebasestorage.app",
+    messagingSenderId: "1002638563755",
+    appId: "1:1002638563755:web:b8dfe47b14e0c15dcd5aee",
+    measurementId: "G-T9MTD6DLVT"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  try { getAnalytics(app); } catch (e) {}
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const googleProvider = new GoogleAuthProvider();
+
+  const signInBtn = document.getElementById("signin-btn");
+  const signOutBtn = document.getElementById("signout-btn");
+  const userBadge = document.getElementById("user-badge");
+  const syncBadge = document.getElementById("sync-badge");
+
+  let currentUser = null;
+  let syncTimeout = null;
+
+  function setSyncStatus(text) {
+    if (!syncBadge) return;
+    syncBadge.hidden = !currentUser;
+    syncBadge.textContent = text;
+  }
+
+  // Save user progress to Firestore automatically (debounced)
+  window.__syncToFirebase = function(stateObj) {
+    if (!currentUser) return;
+    setSyncStatus("🔄 Syncing...");
+    clearTimeout(syncTimeout);
+    syncTimeout = setTimeout(async () => {
+      try {
+        const userRef = doc(db, "users", currentUser.uid);
+        await setDoc(userRef, {
+          progress: JSON.parse(JSON.stringify(stateObj)),
+          updatedAt: Date.now(),
+          email: currentUser.email || ""
+        }, { merge: true });
+        setSyncStatus("☁️ Saved");
+      } catch (err) {
+        console.error("Error saving progress:", err);
+        setSyncStatus("⚠️ Sync error");
+      }
+    }, 350);
+  };
+
+  // Auth handlers. Each one returns { ok: true } or { ok: false, code, message }
+  // so the sign-in window can show a clear message without losing what was typed.
+  const fail = (err) => ({ ok: false, code: err && err.code, message: err && err.message });
+
+  window.__authGoogle = async function() {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      return { ok: true };
+    } catch (err) {
+      return fail(err);
+    }
+  };
+
+  window.__authEmailLogin = async function(email, pass) {
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+      return { ok: true };
+    } catch (err) {
+      return fail(err);
+    }
+  };
+
+  window.__authEmailSignup = async function(email, pass, name) {
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      if (name) {
+        try {
+          await updateProfile(cred.user, { displayName: name });
+          userBadge.textContent = "👤 " + name;
+        } catch (e) {}
+      }
+      return { ok: true };
+    } catch (err) {
+      return fail(err);
+    }
+  };
+
+  window.__authReset = async function(email) {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return { ok: true };
+    } catch (err) {
+      return fail(err);
+    }
+  };
+
+  window.__authSignOut = async function() {
+    try {
+      await signOut(auth);
+      if (window.__toast) window.__toast("Signed out");
+    } catch (err) {
+      console.error("Sign out error:", err);
+    }
+  };
+
+  // Listen for Sign In / Sign Out and auto-load/save user progress
+  onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    // tell the page (and its sign-in window) who is signed in
+    if (window.__onAuthResolved) window.__onAuthResolved(user);
+    if (user) {
+      signInBtn.hidden = true;
+      signOutBtn.hidden = false;
+      userBadge.hidden = false;
+      userBadge.textContent = "👤 " + (user.displayName || user.email || "User");
+      setSyncStatus("⏳ Loading...");
+
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+        const localState = window.__getLocalState ? window.__getLocalState() : null;
+
+        if (snap.exists() && snap.data().progress) {
+          const cloudProgress = snap.data().progress;
+          if ((cloudProgress.subjects && cloudProgress.subjects.length > 0) || !localState?.subjects?.length) {
+            if (!cloudProgress.name && user.displayName) {
+              cloudProgress.name = user.displayName.split(" ")[0];
+            }
+            window.__loadCloudState(cloudProgress);
+            if (window.__toast) window.__toast("☁️ Progress loaded from cloud");
+          } else if (localState && localState.subjects && localState.subjects.length > 0) {
+            window.__syncToFirebase(localState);
+          }
+        } else if (localState) {
+          if (!localState.name && user.displayName) {
+            localState.name = user.displayName.split(" ")[0];
+            window.__loadCloudState(localState);
+          }
+          window.__syncToFirebase(localState);
+          if (window.__toast) window.__toast("☁️ Local progress backed up to cloud");
+        }
+        setSyncStatus("☁️ Saved");
+      } catch (err) {
+        console.error("Error loading cloud progress:", err);
+        setSyncStatus("📴 Offline");
+      }
+    } else {
+      signInBtn.hidden = false;
+      signOutBtn.hidden = true;
+      userBadge.hidden = true;
+      syncBadge.hidden = true;
+    }
+  });
+</script>
+</body>
+</html>
